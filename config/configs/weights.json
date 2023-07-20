@@ -1,0 +1,58 @@
+{
+
+    "GLOBAL_AMMO_SPAWN_CHANCE_MULTI": 1,
+
+    "CATEGORIES":{
+
+        "GRENADES_UGL_FLARES":{
+            "low": 1,
+            "medium": 0.6,
+            "high": 0.2
+        },
+
+        "SHOTGUNS":{
+            "crap": 1,
+            "pen_medium": 0.8,
+            "flesh_medium": 0.6,
+            "flesh_high": 0.3,
+            "pen_high": 0.3,
+            "util": 0.1
+        },
+
+        "GENERAL":{
+            "crap": 1,
+            "flesh_medium": 0.8,
+            "flesh_high": 0.6,
+            "pen_medium": 0.5,
+            "pen_high": 0.2,
+            "pen_veryhigh": 0.1
+        },
+
+        "CALIBERS":{
+            "GRENADES": 0.4,
+            "UGL": 0.1,
+            "FLARES": 0.2,
+            "762x25": 0.7,
+            "9x18": 0.7,
+            "9x19": 1,
+            "9x21": 1,
+            "357mag": 0.8,
+            "45acp": 1,
+            "46x30": 1,
+            "57x26": 1,
+            "545x39": 1,
+            "556x45": 1,
+            "300blackout": 1,
+            "762x39": 1,
+            "762x51": 1,
+            "762x54r": 0.8,
+            "338lapua": 0.3,
+            "9x39": 1,
+            "366tkm": 1,
+            "127x55": 0.6,
+            "12x70": 1,
+            "20x70": 0.7,
+            "23x75": 1
+        }
+    }
+}
