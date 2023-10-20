@@ -16,135 +16,112 @@ import * as ammoWeightsRealismJson from "../config/realism configs/weights_reali
 
 class Mod implements IPostDBLoadMod
 {
-    public postDBLoad(container: DependencyContainer): void 
-    {
+    public postDBLoad(container: DependencyContainer): void {
+
         const databaseServer = container.resolve<DatabaseServer>("DatabaseServer");
         const lg = container.resolve<ILogger>("WinstonLogger")
         const jsonUtil = container.resolve<JsonUtil>("JsonUtil")
         const dbTables = databaseServer.getTables();
         const dbLocations = dbTables.locations
 
-        this.setUpAmmoBoxes(dbTables, jsonUtil, lg)
+        this.pushAmmoBoxesToDB(dbTables, jsonUtil, lg)
 
         for (const mapKey in dbLocations){
 
-            if (!config.separate_weights_per_map){
+            const thisMapLooseLoot =  dbTables.locations[mapKey]?.looseLoot?.spawnpoints
+            if (thisMapLooseLoot === undefined) continue
 
-                const thisMapLooseLoot =  dbTables.locations[mapKey]?.looseLoot?.spawnpoints
+            const itemWeights = this.getItemWeights()
 
-                const itemWeights = this.getItemWeights()
-
-                if (thisMapLooseLoot !== undefined){
-                    this.setMapAmmoSpawns(thisMapLooseLoot, itemWeights, dbTables, lg)
-                }
-            }
+            this.setMapAmmoSpawns(thisMapLooseLoot, itemWeights, dbTables, lg)
         }
-
-        //this.logAmmoAndBoxes(lg, dbItems, "23x75")
-        //"loot_ammo_common (100)1131576"
     }
 
-    setUpAmmoBoxes(dbTables, jsonUtil, lg){
+    pushAmmoBoxesToDB(dbTables, jsonUtil, lg){
 
-        const dbItems = dbTables.templates.items
         const dbHandbook = dbTables.templates.handbook;
         const locales = Object.values(dbTables.locales.global) as Record<string, string>[];
 
-        const ammoBoxes = ammoBoxesJson.BOXES
-        const ammoTiers = ammoTiersJson.CALIBERS
-        for (const cal in ammoBoxes){
+        const configAmmoBoxes = ammoBoxesJson.BOXES
+        const configAmmoTiers = ammoTiersJson.CALIBERS
+        for (const caliber in configAmmoBoxes){
 
-            const thisCal = ammoBoxes[cal]
+            const thisCaliber = configAmmoBoxes[caliber]
+            if (configAmmoTiers[caliber].type === "GRENADES_UGL_FLARES") continue
 
-            for (const boxId in thisCal){
+            for (const boxId in thisCaliber){
 
-                const thisBox = thisCal[boxId]
+                const thisConfigBox = thisCaliber[boxId]
+                if (thisConfigBox.disabled) continue
+                if (thisConfigBox.box_type === undefined){
+                    lg.log("CHECK ammoboxes.json FILE FOR MISSING OR MISPELLED box_type", "red")
+                    continue
+                }
 
-                if (ammoTiers[cal].type !== "GRENADES_UGL_FLARES" && !thisBox.disabled){
+                const ammoBox = this.createAmmoBox(jsonUtil, dbTables, thisConfigBox, boxId)           
+                dbTables.templates.items[boxId] = ammoBox
 
-                    const roundInBoxId = thisBox.roundInBox_id
-                    const roundInBoxName = thisBox.roundInBox_name
-                    //boxId = id of box item itself
-
-                    const dbBox = dbItems[boxId]
-                    const boxType = thisBox.box_type ?? "DEFAULT"
-                    if (thisBox.box_type === undefined){
-                        lg.log("CHECK ammoboxes.json FILE FOR MISSING OR MISPELLED box_type", "red")
+                dbHandbook.Items.push(
+                    {
+                        "Id": boxId,
+                        "ParentId": "5b47574386f77428ca22b33c",
+                        "Price": 0
                     }
-                    
-                    //if it is undefined we need to create a new one
-                    if (dbBox === undefined){
-                        const newBox = jsonUtil.clone(dbItems["5737330a2459776af32363a1"])
-                        newBox._id = boxId
+                );
 
-                        newBox._name = boxId
-                        newBox._props.Name = boxId
-                        newBox._props.ShortName = boxId
-                        newBox._props.Description = boxId
-
-                        newBox._props.Width = config.box_types[boxType].sizeH ?? 1
-                        newBox._props.Height = config.box_types[boxType].sizeV ?? 1
-                        
-                        newBox._props.StackSlots[0]._parent = boxId
-                        newBox._props.StackSlots[0]._props.filters[0].Filter = [roundInBoxId]
-                        newBox._props.StackSlots[0]._max_count = thisBox.round_count
-
-                        const bundlePath = config.box_types[boxType].bundle_path
-                        newBox._props.Prefab.path = bundlePath
-
-                        dbTables.templates.items[boxId] = newBox
-
-                        dbHandbook.Items.push(
-                            {
-                                "Id": boxId,
-                                "ParentId": "5b47574386f77428ca22b33c",
-                                "Price": 0
-                            }
-                        );
-
-                        for (const locale of locales) {
-                            locale[`${boxId} Name`] = `Carboard box holding ${locale[`${thisBox.roundInBox_id} Name`]} rounds`
-                            locale[`${boxId} ShortName`] = locale[`${thisBox.roundInBox_id} ShortName`]
-                            locale[`${boxId} Description`] = `Carboard box holding ${locale[`${thisBox.roundInBox_id} Name`]} rounds`
-                        }
-
-                    } else {
-                        //update names
-                        dbBox._name = roundInBoxName + "_ammobox"
-                        dbBox._props.Name = roundInBoxName + "_ammobox"
-                        dbBox._props.ShortName = roundInBoxName + "_ammobox"
-                        dbBox._props.Description = roundInBoxName + "_ammobox"
-
-                        dbBox.Width = config.box_types[thisBox.box_type].sizeH ?? 1
-                        dbBox.Height = config.box_types[thisBox.box_type].sizeH ?? 1
-
-                        for (const locale of locales) {
-                            locale[`${boxId} Name`] = `Carboard box holding ${locale[`${thisBox.roundInBox_id} Name`]} rounds`
-                            locale[`${boxId} ShortName`] = locale[`${thisBox.roundInBox_id} ShortName`]
-                            locale[`${boxId} Description`] = `Carboard box holding ${locale[`${thisBox.roundInBox_id} Name`]} rounds`
-                        }
-
-                        //update bundle path
-                        const bundlePath = config.box_types[thisBox.box_type].bundle_path
-                        dbBox._props.Prefab.path = bundlePath
-
-                        //set round in box/ amount
-                        dbBox._props.StackSlots[0]._max_count = thisBox.round_count
-                    }
+                for (const locale of locales) {
+                    locale[`${boxId} Name`] = `Carboard box holding ${locale[`${thisConfigBox.roundInBox_id} Name`]} rounds`
+                    locale[`${boxId} ShortName`] = locale[`${thisConfigBox.roundInBox_id} ShortName`]
+                    locale[`${boxId} Description`] = `Carboard box holding ${locale[`${thisConfigBox.roundInBox_id} Name`]} rounds`
                 }
             }
         }
+    }
+
+    createAmmoBox(jsonUtil, dbTables, configBox, boxId):any{
+
+        const roundInBoxId = configBox.roundInBox_id
+        const boxType = configBox.box_type ?? "DEFAULT"
+
+        const newBox = jsonUtil.clone(dbTables.templates.items["5737330a2459776af32363a1"])
+        newBox._id = boxId
+
+        newBox._name = boxId
+        newBox._props.Name = boxId
+        newBox._props.ShortName = boxId
+        newBox._props.Description = boxId
+
+        newBox._props.Width = config.box_types[boxType].sizeH ?? 1
+        newBox._props.Height = config.box_types[boxType].sizeV ?? 1
+        
+        newBox._props.StackSlots[0]._parent = boxId
+        newBox._props.StackSlots[0]._props.filters[0].Filter = [roundInBoxId]
+        newBox._props.StackSlots[0]._max_count = configBox.round_count
+
+        const bundlePath = config.box_types[boxType].bundle_path
+        newBox._props.Prefab.path = bundlePath
+
+        return newBox
     }
 
     getItemWeights(){
 
         const itemWeights = {}
+
         let ammoWeights
-        if (config.spt_realism_ammo_compat){ammoWeights = ammoWeightsRealismJson.CATEGORIES}
-        else                               {ammoWeights = ammoWeightsJson.CATEGORIES}
+        if (config.spt_realism_ammo_compat){
+            ammoWeights = ammoWeightsRealismJson.CATEGORIES
+        } else {
+            ammoWeights = ammoWeightsJson.CATEGORIES
+        }
+
+
         let ammoTiers
-        if (config.spt_realism_ammo_compat){ammoTiers = ammoTiersRealismJson.CALIBERS}
-        else                               {ammoTiers = ammoTiersJson.CALIBERS}
+        if (config.spt_realism_ammo_compat){
+            ammoTiers = ammoTiersRealismJson.CALIBERS
+        } else {
+            ammoTiers = ammoTiersJson.CALIBERS
+        }
 
         for (const cal in ammoTiers){
 
@@ -215,8 +192,9 @@ class Mod implements IPostDBLoadMod
                         if (ammoTiers[cal]?.type === "GRENADES_UGL_FLARES"){
                             for (const nadeOrFlare in thisCal){
 
-                                if (itemWeights[nadeOrFlare] === undefined)
+                                if (itemWeights[nadeOrFlare] === undefined){
                                     lg.log("CHECK JSONS FOR MISPELLED AMMO!!", "red")
+                                }
                                 
                                 thisSpawnPointTemplate.Items.push(
                                     {

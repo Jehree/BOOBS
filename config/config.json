@@ -1,6 +1,5 @@
 {
-    "separate_weights_per_map": false,
-    "spt_realism_ammo_compat": true,
+    "spt_realism_ammo_compat": false,
 
     "box_types":{
         "DEFAULT": {
