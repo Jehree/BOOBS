@@ -87,7 +87,7 @@
                 "9x19_CCI"
             ],
             "flesh_high": [
-                "9x19_QUAKEMAKER"
+                "9x19_QUAKEMAKER", "9x19_M882"
             ],
             "pen_medium": [
                 "9x19_PST", "9x19_RIP"
@@ -156,7 +156,7 @@
             ],
             "flesh_high": [],
             "pen_medium": [
-                "4.6x30_FMJ"  
+                "4.6x30_FMJ", "4.6x30_JSP"
             ],
             "pen_high": [
                 "4.6x30_SUBSONIC"
@@ -233,7 +233,7 @@
                 ".300blk_FMJ"
             ],
             "pen_high": [
-                ".300blk_AP"
+                ".300blk_AP", ".300blk_CBJ"
             ],
             "pen_veryhigh": [
                 ".300blk_VMAX", ".300blk_M62"
@@ -249,10 +249,10 @@
             ],
             "flesh_high": [],
             "pen_medium": [
-                "7.62x39_T45M"
+                "7.62x39_T45M", "7.62x39_PP"
             ],
             "pen_high": [
-                "7.62x39_PS", "7.62x39_BP"
+                "7.62x39_PS", "7.62x39_BP", "7.62x39_FMJ", "7.62x39_SP"
             ],
             "pen_veryhigh": [
                 "7.62x39_MAIAP"
@@ -281,13 +281,13 @@
             "flesh_medium": [],
             "flesh_high": [],
             "pen_medium": [
-                "7.62x54R_T46M", "7.62x54R_LPS"
+                "7.62x54R_T46M", "7.62x54R_LPS", "7.62x54R_FMJ"
             ],
             "pen_high": [
-                "7.62x54R_BT", "7.62x54R_PS"
+                "7.62x54R_BT", "7.62x54R_PS", "7.62x54R_HPBT"
             ],
             "pen_veryhigh": [
-                "7.62x54R_BSGS", "7.62x54R_SNB"
+                "7.62x54R_BSGS", "7.62x54R_SNB", "7.62x54R_SPBT"
             ]
         },
 
@@ -366,7 +366,7 @@
 
             "crap": [
                 "12x70_525BUCK", "12x70_7BUCK", "12x70_SABOTSLUG",
-                "12x70_LEADSLUG", "12x70_FLECHETTE", "12x70_50BMGSLUG"
+                "12x70_LEADSLUG", "12x70_FLECHETTE", "12x70_50BMGSLUG", "12x70_PIRANHA"
             ],
             "flesh_medium": [
                 "12x70_65BUCK", "12x70_RIPSLUG",

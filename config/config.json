@@ -1,6 +1,13 @@
 {
     "spt_realism_ammo_compat": false,
 
+    "spawnpoint_item_type_blacklist":[
+        "5c164d2286f774194c5e69fa",
+        "5c99f98d86f7745c314214b3",
+        "5795f317245977243854e041",
+        "5671435f4bdc2d96058b4569"
+    ],
+
     "box_types":{
         "DEFAULT": {
             "bundle_path": "assets/content/items/ammo/boxes/item_ammo_box_545x39_30.bundle",

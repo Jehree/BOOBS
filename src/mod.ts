@@ -4,6 +4,7 @@ import { IPostDBLoadMod } from "@spt-aki/models/external/IPostDBLoadMod";
 import { DatabaseServer } from "@spt-aki/servers/DatabaseServer";
 import { ITemplateItem } from "@spt-aki/models/eft/common/tables/ITemplateItem";
 import { ILogger } from "@spt-aki/models/spt/utils/ILogger";
+import { LogTextColor } from "@spt-aki/models/spt/logging/LogTextColor";
 import { IDatabaseTables } from "@spt-aki/models/spt/server/IDatabaseTables";
 import { JsonUtil } from "@spt-aki/utils/JsonUtil";
 
@@ -28,8 +29,15 @@ class Mod implements IPostDBLoadMod
         const dbTables = databaseServer.getTables();
         const dbLocations = dbTables.locations
 
+        lg.log("[BOOBS]: Pushing ammo boxes to database...", LogTextColor.MAGENTA)
         this.pushAmmoBoxesToDB(dbTables, jsonUtil, lg)
+        lg.log("[BOOBS]: Done!", LogTextColor.GREEN)
 
+        if (config.spt_realism_ammo_compat){
+            lg.log("[BOOBS]: Realism compatibility enabled, adjusting ammo tiers to SPT Realism's ammo stats", LogTextColor.GREEN)
+        }
+
+        lg.log("[BOOBS]: Editing loose loot spawn points...", LogTextColor.MAGENTA)
         for (const mapKey in dbLocations){
 
             const thisMapLooseLoot =  dbTables.locations[mapKey]?.looseLoot?.spawnpoints
@@ -39,6 +47,7 @@ class Mod implements IPostDBLoadMod
 
             this.setMapAmmoSpawns(thisMapLooseLoot, itemWeights, dbTables, lg)
         }
+        lg.log("[BOOBS]: Done!", LogTextColor.GREEN)
     }
 
     pushAmmoBoxesToDB(dbTables, jsonUtil, lg){
@@ -191,110 +200,121 @@ class Mod implements IPostDBLoadMod
             const thisSpawnPoint = mapLootSpawnpoints[loot]
             const thisSpawnPointTemplate = thisSpawnPoint.template
             thisSpawnPoint.probability *= ammoWeightsJson.GLOBAL_AMMO_SPAWN_CHANCE_MULTI
+            let thisPointSpawnsAmmo = false
 
-
+            //first pass to check for blacklisted item types
             for (const item in thisSpawnPointTemplate?.Items){
-                //if this spawn point has an ammo box
-                
+                const blacklistedItemTypes = config.spawnpoint_item_type_blacklist
+                const thisItemParentId = dbItems[thisSpawnPointTemplate.Items[item]?._tpl]?._parent
 
-                if (dbItems[thisSpawnPointTemplate.Items[item]?._tpl]?._parent !== "543be5cb4bdc2deb348b4568") continue
+                if (blacklistedItemTypes.includes(thisItemParentId)) continue spawnPointLoop
 
-                thisSpawnPointTemplate.Items = []
-                thisSpawnPoint.itemDistribution = []
+                if (thisItemParentId === "543be5cb4bdc2deb348b4568"){
+                    thisPointSpawnsAmmo = true
+                }
+            }
 
-                for (const caliber in ammoBoxes){
+            if (!thisPointSpawnsAmmo) continue spawnPointLoop
 
-                    const thisCaliber = ammoBoxes[caliber]
+            //-----------------------------------------------------------------------------
+            //at this point, we know that we have a spawnpoint that can spawn ammo boxes
+            //and that does not include any of the blacklisted item types
+            //-----------------------------------------------------------------------------
 
-                    let isGrenadeUGLOrFlare = false
-                    let isAmmoBox = false
+            thisSpawnPointTemplate.Items = []
+            thisSpawnPoint.itemDistribution = []
 
-                    if (ammoTiers[caliber]?.type === "GRENADES_UGL_FLARES"){
-                        isGrenadeUGLOrFlare = true
-                    } else {
-                        isAmmoBox = true
-                    }
+            for (const caliber in ammoBoxes){
 
-                    if (isGrenadeUGLOrFlare){
-                        for (const nadeName in thisCaliber){
+                const thisCaliber = ammoBoxes[caliber]
+
+                let isGrenadeUGLOrFlare = false
+                let isAmmoBox = false
+
+                if (ammoTiers[caliber]?.type === "GRENADES_UGL_FLARES"){
+                    isGrenadeUGLOrFlare = true
+                } else {
+                    isAmmoBox = true
+                }
+
+                if (isGrenadeUGLOrFlare){
+                    for (const nadeName in thisCaliber){
 
 
-                            const thisNadeConfig = thisCaliber[nadeName]
-                            if (thisNadeConfig.disabled) continue
+                        const thisNadeConfig = thisCaliber[nadeName]
+                        if (thisNadeConfig.disabled) continue
 
-                            const thisNadeWeightValue = itemWeights[nadeName]
+                        const thisNadeWeightValue = itemWeights[nadeName]
 
-                            if (thisNadeWeightValue === undefined){
-                                lg.log("CHECK WEIGHTS JSONS FOR MISPELLED AMMO!!", "red")
-                                continue
-                            }
-
-                            const nadeTpl = thisCaliber[nadeName]
-                            const nadeInstanceId = nadeName + "_SpawnPoint_Instance_Id"
-                            
-                            thisSpawnPointTemplate.Items.push(
-                                {
-                                    _id: nadeInstanceId,
-                                    _tpl: nadeTpl
-                                }
-                            )
-                            thisSpawnPoint.itemDistribution.push(
-                                {
-                                    composedKey: {
-                                        key: nadeInstanceId
-                                    },
-                                    relativeProbability: thisNadeWeightValue
-                                }
-                            )
+                        if (thisNadeWeightValue === undefined){
+                            lg.log("CHECK WEIGHTS JSONS FOR MISPELLED AMMO!!", "red")
+                            continue
                         }
-                    }
 
-                    if (isAmmoBox) {
-                        for (const boxTpl in thisCaliber){
-
-                            const thisBoxConfig = thisCaliber[boxTpl]
-                            if (thisBoxConfig.disabled) continue
-
-                            const thisBoxWeightValue = itemWeights[thisBoxConfig.roundInBox_name]
-
-                            if (thisBoxWeightValue === undefined){
-                                lg.log("CHECK WEIGHTS JSONS FOR MISPELLED AMMO!!", "red")
-                                continue
+                        const nadeTpl = thisCaliber[nadeName]
+                        const nadeInstanceId = nadeName + "_SpawnPoint_Instance_Id"
+                        
+                        thisSpawnPointTemplate.Items.push(
+                            {
+                                _id: nadeInstanceId,
+                                _tpl: nadeTpl
                             }
-
-                            const boxInstanceId = boxTpl + "_SpawnPoint_Instance_Id"
-
-                            const roundsInBoxInstanceId = thisBoxConfig.roundInBox_name + "_SpawnPoint_Instance_Id"
-                            const roundsInBoxTpl = thisBoxConfig.roundInBox_id
-                            const roundsInBoxCount = thisBoxConfig.round_count
-
-                            thisSpawnPointTemplate.Items.push(
-                                {
-                                    _id: boxInstanceId,
-                                    _tpl: boxTpl                                        
-
+                        )
+                        thisSpawnPoint.itemDistribution.push(
+                            {
+                                composedKey: {
+                                    key: nadeInstanceId
                                 },
-                                {
-                                    _id: roundsInBoxInstanceId,
-                                    _tpl: roundsInBoxTpl,                                        
-                                    parentId: boxInstanceId,
-                                    slotId: "cartridges",
-                                    upd: {StackObjectsCount:roundsInBoxCount}
-                                }
-                            )
-
-                            thisSpawnPoint.itemDistribution.push(
-                                {
-                                    composedKey: {
-                                        key: boxInstanceId
-                                    },
-                                    relativeProbability: thisBoxWeightValue
-                                }
-                            )
-                        }
+                                relativeProbability: thisNadeWeightValue
+                            }
+                        )
                     }
                 }
-                continue spawnPointLoop
+
+                if (isAmmoBox) {
+                    for (const boxTpl in thisCaliber){
+
+                        const thisBoxConfig = thisCaliber[boxTpl]
+                        if (thisBoxConfig.disabled) continue
+
+                        const thisBoxWeightValue = itemWeights[thisBoxConfig.roundInBox_name]
+
+                        if (thisBoxWeightValue === undefined){
+                            lg.log("CHECK WEIGHTS JSONS FOR MISPELLED AMMO!!", "red")
+                            continue
+                        }
+
+                        const boxInstanceId = boxTpl + "_SpawnPoint_Instance_Id"
+
+                        const roundsInBoxInstanceId = thisBoxConfig.roundInBox_name + "_SpawnPoint_Instance_Id"
+                        const roundsInBoxTpl = thisBoxConfig.roundInBox_id
+                        const roundsInBoxCount = thisBoxConfig.round_count
+
+                        thisSpawnPointTemplate.Items.push(
+                            {
+                                _id: boxInstanceId,
+                                _tpl: boxTpl                                        
+
+                            },
+                            {
+                                _id: roundsInBoxInstanceId,
+                                _tpl: roundsInBoxTpl,                                        
+                                parentId: boxInstanceId,
+                                slotId: "cartridges",
+                                upd: {StackObjectsCount:roundsInBoxCount}
+                            }
+                        )
+
+                        thisSpawnPoint.itemDistribution.push(
+                            {
+                                composedKey: {
+                                    key: boxInstanceId
+                                },
+                                relativeProbability: thisBoxWeightValue
+                            }
+                        )
+                    }
+                }
             }
         }
     }
