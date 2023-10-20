@@ -14,6 +14,10 @@ import * as ammoTiersRealismJson from "../config/realism configs/ammotiers_reali
 import * as ammoWeightsJson from "../config/configs/weights.json";
 import * as ammoWeightsRealismJson from "../config/realism configs/weights_realism.json";
 
+type AmmoWeights = typeof ammoWeightsRealismJson.CATEGORIES | typeof ammoWeightsJson.CATEGORIES
+type AmmoTiers = typeof ammoTiersRealismJson.CALIBERS | typeof ammoTiersJson.CALIBERS
+type AmmoBoxes = typeof ammoBoxesJson.BOXES
+
 class Mod implements IPostDBLoadMod
 {
     public postDBLoad(container: DependencyContainer): void {
@@ -78,7 +82,7 @@ class Mod implements IPostDBLoadMod
         }
     }
 
-    createAmmoBox(jsonUtil, dbTables, configBox, boxId):any{
+    createAmmoBox(jsonUtil, dbTables, configBox, boxId){
 
         const roundInBoxId = configBox.roundInBox_id
         const boxType = configBox.box_type ?? "DEFAULT"
@@ -106,36 +110,31 @@ class Mod implements IPostDBLoadMod
 
     getItemWeights(){
 
-        const itemWeights = {}
-
-        let ammoWeights
+        let ammoWeights:AmmoWeights = ammoWeightsJson.CATEGORIES
         if (config.spt_realism_ammo_compat){
             ammoWeights = ammoWeightsRealismJson.CATEGORIES
-        } else {
-            ammoWeights = ammoWeightsJson.CATEGORIES
         }
 
-
-        let ammoTiers
+        let ammoTiers:AmmoTiers = ammoTiersJson.CALIBERS
         if (config.spt_realism_ammo_compat){
             ammoTiers = ammoTiersRealismJson.CALIBERS
-        } else {
-            ammoTiers = ammoTiersJson.CALIBERS
         }
 
-        for (const cal in ammoTiers){
+        const itemWeights = {}
 
-            const thisWeightCatKey = ammoTiers[cal].type ?? "GENERAL"
-            const thisCatWeights = ammoWeights[thisWeightCatKey]
+        for (const caliber in ammoTiers){
 
-            const caliberWeightMultipliers = ammoWeights["CALIBERS"]
-            const thisCalTiers = ammoTiers[cal]
+            const thisWeightType:string = ammoTiers[caliber].type ?? "GENERAL"
+            const thisCategoryWeights:{string: number} = ammoWeights[thisWeightType]
+
+            const caliberWeightMultipliers = ammoWeights.CALIBERS
+            const thisCaliberTiers = ammoTiers[caliber]
             
             //get sum of multiplier numbers from this tier
-            const summedCatMultipliers = +(+Object.values(thisCatWeights).reduce((init:number, iter:number) => init + iter, 0)).toFixed(4)
-            
-            //all cals start with a weight of 1200 that gets multiplied by their respective cal multiplier
-            const calTotalAllottedWeight = 1200 * caliberWeightMultipliers[cal]
+            const summedMultipliers = this.getSumOfValues(caliberWeightMultipliers, 4)
+
+            //all caliberss start with a weight of 1200 that gets multiplied by their respective cal multiplier
+            const totalAllottedWeight = 1200 * caliberWeightMultipliers[caliber]
             
             /* formuala below (thanks chatGPT!)
             share_A = (m_A / total_multiplier) * totalPointsForCategory
@@ -144,32 +143,50 @@ class Mod implements IPostDBLoadMod
             share_D = (m_D / total_multiplier) * totalPointsForCategory
             */
 
-            for (const tier in thisCalTiers){
 
-                const dontLoopTheseParams = ["type", "box_type"]
-                if (!dontLoopTheseParams.includes(tier)){
+            for (const tier in thisCaliberTiers){
 
-                    const thisTierMultiplier = thisCatWeights[tier]
-                    const thisTierAlottedWeight = (thisTierMultiplier / summedCatMultipliers) * calTotalAllottedWeight
+                const skipTheseParams = ["type", "box_type"]
+                if (skipTheseParams.includes(tier)) continue
 
-                    //loop thru this tier's ammos and divide the alloted weight we calc'd among them
-                    //then add that to the itemWeights object
-                    const thisTierArr = thisCalTiers[tier]
-                    for (const i in thisTierArr){
-                        itemWeights[thisTierArr[i]] = Math.round(thisTierAlottedWeight / thisTierArr.length)
-                    }
+                const thisTierMultiplier = thisCategoryWeights[tier]
+
+                const thisTierAlottedWeight = (thisTierMultiplier / summedMultipliers) * totalAllottedWeight
+
+                //loop thru this tier's ammos and divide the alloted weight we calc'd among them
+                //then add that to the itemWeights object
+                const thisTierAmmos:Array<string> = thisCaliberTiers[tier]
+
+                for (const i in thisTierAmmos){
+                    const thisRoundName = thisTierAmmos[i]
+
+                    itemWeights[thisRoundName] = Math.round(thisTierAlottedWeight / thisTierAmmos.length)
                 }
             }
         }
         return itemWeights
     }
 
+    getSumOfValues(object:any, decimalPoints:number):number{
+        const values = Object.values(object)
+        const summedValues = +(values.reduce((init:number, iter:number) => init + iter, 0))
+        const fixedSummedValues = +summedValues.toFixed(decimalPoints)
+
+        return fixedSummedValues
+    }
+
     setMapAmmoSpawns(mapLootSpawnpoints, itemWeights, dbTables: IDatabaseTables, lg):void{
 
-        const ammoBoxes = ammoBoxesJson.BOXES
-        const ammoTiers = ammoTiersJson.CALIBERS
+        const ammoBoxes:AmmoBoxes = ammoBoxesJson.BOXES
+
+        let ammoTiers:AmmoTiers = ammoTiersJson.CALIBERS
+        if (config.spt_realism_ammo_compat){
+            ammoTiers = ammoTiersRealismJson.CALIBERS
+        }
+
         const dbItems = dbTables.templates.items
         
+        spawnPointLoop:
         for (const loot in mapLootSpawnpoints){
             const thisSpawnPoint = mapLootSpawnpoints[loot]
             const thisSpawnPointTemplate = thisSpawnPoint.template
@@ -180,80 +197,108 @@ class Mod implements IPostDBLoadMod
                 //if this spawn point has an ammo box
                 
 
-                if (dbItems[thisSpawnPointTemplate.Items[item]?._tpl]?._parent === "543be5cb4bdc2deb348b4568"){
+                if (dbItems[thisSpawnPointTemplate.Items[item]?._tpl]?._parent !== "543be5cb4bdc2deb348b4568") continue
 
-                    thisSpawnPointTemplate.Items = []
-                    thisSpawnPoint.itemDistribution = []
-    
-                    for (const cal in ammoBoxes){
-    
-                        const thisCal = ammoBoxes[cal]
+                thisSpawnPointTemplate.Items = []
+                thisSpawnPoint.itemDistribution = []
 
-                        if (ammoTiers[cal]?.type === "GRENADES_UGL_FLARES"){
-                            for (const nadeOrFlare in thisCal){
+                for (const caliber in ammoBoxes){
 
-                                if (itemWeights[nadeOrFlare] === undefined){
-                                    lg.log("CHECK JSONS FOR MISPELLED AMMO!!", "red")
-                                }
-                                
-                                thisSpawnPointTemplate.Items.push(
-                                    {
-                                        _id: nadeOrFlare + "SpawnPointItemID",
-                                        _tpl: thisCal[nadeOrFlare]
-                                    }
-                                )
-                                thisSpawnPoint.itemDistribution.push(
-                                    {
-                                        composedKey: {
-                                            key: nadeOrFlare + "SpawnPointItemID"
-                                        },
-                                        relativeProbability: itemWeights[nadeOrFlare] ?? 1
-                                    }
-                                )
+                    const thisCaliber = ammoBoxes[caliber]
+
+                    let isGrenadeUGLOrFlare = false
+                    let isAmmoBox = false
+
+                    if (ammoTiers[caliber]?.type === "GRENADES_UGL_FLARES"){
+                        isGrenadeUGLOrFlare = true
+                    } else {
+                        isAmmoBox = true
+                    }
+
+                    if (isGrenadeUGLOrFlare){
+                        for (const nadeName in thisCaliber){
+
+
+                            const thisNadeConfig = thisCaliber[nadeName]
+                            if (thisNadeConfig.disabled) continue
+
+                            const thisNadeWeightValue = itemWeights[nadeName]
+
+                            if (thisNadeWeightValue === undefined){
+                                lg.log("CHECK WEIGHTS JSONS FOR MISPELLED AMMO!!", "red")
+                                continue
                             }
-                        }  else {
-                            for (const ammoBoxId in thisCal){
-                                
-                                if (!thisCal[ammoBoxId].disabled){
 
-                                    if (itemWeights[thisCal[ammoBoxId].roundInBox_name] === undefined)
-                                        lg.log("CHECK JSONS FOR MISPELLED AMMO!!", "red")
-
-                                    thisSpawnPointTemplate.Items.push(
-                                        {
-                                            _id: thisCal[ammoBoxId].roundInBox_name + "SpawnPointItemID",
-                                            _tpl: ammoBoxId                                        
-    
-                                        },
-                                        {
-                                            _id: thisCal[ammoBoxId].roundInBox_name + "ChildSpawnPointItemID",
-                                            _tpl: thisCal[ammoBoxId].roundInBox_id,                                        
-                                            parentId: thisCal[ammoBoxId].roundInBox_name + "SpawnPointItemID",
-                                            slotId: "cartridges",
-                                            upd: {StackObjectsCount:thisCal[ammoBoxId].round_count}
-                                        }
-                                    )
-
-                                    thisSpawnPoint.itemDistribution.push(
-                                        {
-                                            composedKey: {
-                                                key: thisCal[ammoBoxId].roundInBox_name + "SpawnPointItemID"
-                                            },
-                                            relativeProbability: itemWeights[thisCal[ammoBoxId].roundInBox_name] ?? 1
-                                        }
-                                    )
+                            const nadeTpl = thisCaliber[nadeName]
+                            const nadeInstanceId = nadeName + "_SpawnPoint_Instance_Id"
+                            
+                            thisSpawnPointTemplate.Items.push(
+                                {
+                                    _id: nadeInstanceId,
+                                    _tpl: nadeTpl
                                 }
-                            }
+                            )
+                            thisSpawnPoint.itemDistribution.push(
+                                {
+                                    composedKey: {
+                                        key: nadeInstanceId
+                                    },
+                                    relativeProbability: thisNadeWeightValue
+                                }
+                            )
                         }
                     }
-                    /*console.log(thisSpawnPointTemplate.Items)
-                    console.log(thisSpawnPoint.itemDistribution)*/
 
-                    //break
+                    if (isAmmoBox) {
+                        for (const boxTpl in thisCaliber){
+
+                            const thisBoxConfig = thisCaliber[boxTpl]
+                            if (thisBoxConfig.disabled) continue
+
+                            const thisBoxWeightValue = itemWeights[thisBoxConfig.roundInBox_name]
+
+                            if (thisBoxWeightValue === undefined){
+                                lg.log("CHECK WEIGHTS JSONS FOR MISPELLED AMMO!!", "red")
+                                continue
+                            }
+
+                            const boxInstanceId = boxTpl + "_SpawnPoint_Instance_Id"
+
+                            const roundsInBoxInstanceId = thisBoxConfig.roundInBox_name + "_SpawnPoint_Instance_Id"
+                            const roundsInBoxTpl = thisBoxConfig.roundInBox_id
+                            const roundsInBoxCount = thisBoxConfig.round_count
+
+                            thisSpawnPointTemplate.Items.push(
+                                {
+                                    _id: boxInstanceId,
+                                    _tpl: boxTpl                                        
+
+                                },
+                                {
+                                    _id: roundsInBoxInstanceId,
+                                    _tpl: roundsInBoxTpl,                                        
+                                    parentId: boxInstanceId,
+                                    slotId: "cartridges",
+                                    upd: {StackObjectsCount:roundsInBoxCount}
+                                }
+                            )
+
+                            thisSpawnPoint.itemDistribution.push(
+                                {
+                                    composedKey: {
+                                        key: boxInstanceId
+                                    },
+                                    relativeProbability: thisBoxWeightValue
+                                }
+                            )
+                        }
+                    }
                 }
+                continue spawnPointLoop
             }
         }
     }
+
 
     logAmmoAndBoxes(lg: ILogger, dbItems: Record<string, ITemplateItem>, nameContains){
         lg.log("All rounds and ammo boxes for this caliber: " + nameContains, "magenta")
@@ -290,7 +335,7 @@ class Mod implements IPostDBLoadMod
         }
 
         for (const ammo in ammosOfThisCal){
-            lg.log(`"${dbItems[ammosOfThisCal[ammo]]._name}_jehree_ammobox":{
+            lg.log(`"${dbItems[ammosOfThisCal[ammo]]._name}_BOOBS_ammobox":{
                 "roundInBox_id": "${ammosOfThisCal[ammo]}",
                 "roundInBox_name": "${dbItems[ammosOfThisCal[ammo]]._name}",
                 "round_count": 30,
