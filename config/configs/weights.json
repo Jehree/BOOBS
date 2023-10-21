@@ -5,7 +5,7 @@
     "CATEGORIES":{
 
         "GRENADES_UGL_FLARES":{
-            "low": 1,
+            "low": 1, 
             "medium": 0.6,
             "high": 0.2
         },

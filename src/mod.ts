@@ -33,6 +33,7 @@ class Mod implements IPostDBLoadMod
         this.pushAmmoBoxesToDB(dbTables, jsonUtil, lg)
         lg.log("[BOOBS]: Done!", LogTextColor.GREEN)
 
+
         if (config.spt_realism_ammo_compat){
             lg.log("[BOOBS]: Realism compatibility enabled, adjusting ammo tiers to SPT Realism's ammo stats", LogTextColor.GREEN)
         }
@@ -60,6 +61,7 @@ class Mod implements IPostDBLoadMod
         for (const caliber in configAmmoBoxes){
 
             const thisCaliber = configAmmoBoxes[caliber]
+
             if (configAmmoTiers[caliber].type === "GRENADES_UGL_FLARES") continue
 
             for (const boxId in thisCaliber){
@@ -133,17 +135,25 @@ class Mod implements IPostDBLoadMod
 
         for (const caliber in ammoTiers){
 
-            const thisWeightType:string = ammoTiers[caliber].type ?? "GENERAL"
-            const thisCategoryWeights:{string: number} = ammoWeights[thisWeightType]
-
-            const caliberWeightMultipliers = ammoWeights.CALIBERS
             const thisCaliberTiers = ammoTiers[caliber]
+            const thisWeightType:string = thisCaliberTiers.type ?? "GENERAL"
+            const thisCategoryWeights:{string: number} = this.copyObject(ammoWeights[thisWeightType])
+
+            //set weight to 0 if there are no ammos in a tier
+            for (const tier in thisCategoryWeights){
+
+                if (thisCaliberTiers[tier]?.length === 0){
+
+                    thisCategoryWeights[tier] = 0
+                }
+            }
             
             //get sum of multiplier numbers from this tier
-            const summedMultipliers = this.getSumOfValues(caliberWeightMultipliers, 4)
+            const summedMultipliers = this.getSumOfWeights(thisCategoryWeights, 4)
 
             //all caliberss start with a weight of 1200 that gets multiplied by their respective cal multiplier
-            const totalAllottedWeight = 1200 * caliberWeightMultipliers[caliber]
+            const totalAllottedPointsMultipliers = ammoWeights.CALIBERS
+            const totalAllottedWeight = 100000 * totalAllottedPointsMultipliers[caliber]
             
             /* formuala below (thanks chatGPT!)
             share_A = (m_A / total_multiplier) * totalPointsForCategory
@@ -168,23 +178,41 @@ class Mod implements IPostDBLoadMod
 
                 for (const i in thisTierAmmos){
                     const thisRoundName = thisTierAmmos[i]
-
-                    itemWeights[thisRoundName] = Math.round(thisTierAlottedWeight / thisTierAmmos.length)
+                    let itemWeight = Math.round(thisTierAlottedWeight / thisTierAmmos.length)
+                    if (itemWeight <= 0){itemWeight = 1}
+                    itemWeights[thisRoundName] = itemWeight
                 }
             }
         }
         return itemWeights
     }
 
-    getSumOfValues(object:any, decimalPoints:number):number{
+    copyObject(input:any):any{
+        return JSON.parse(JSON.stringify(input))
+    }
+
+    getSumOfWeights(object:any, decimalPoints:number):number{
         const values = Object.values(object)
         const summedValues = +(values.reduce((init:number, iter:number) => init + iter, 0))
         const fixedSummedValues = +summedValues.toFixed(decimalPoints)
+
+        
 
         return fixedSummedValues
     }
 
     setMapAmmoSpawns(mapLootSpawnpoints, itemWeights, dbTables: IDatabaseTables, lg):void{
+
+        /*
+        for (const i in itemWeights){
+            if (itemWeights[i] <= 10){
+                console.log(i)
+            }
+        }
+        console.log("END")
+        */
+        
+        
 
         const ammoBoxes:AmmoBoxes = ammoBoxesJson.BOXES
 
@@ -319,6 +347,40 @@ class Mod implements IPostDBLoadMod
         }
     }
 
+    checkForIdTypos(lg:ILogger, dbTables:IDatabaseTables){
+        const ammoBoxes = ammoBoxesJson.BOXES
+        for (const cal in ammoBoxes){
+            const thisCal = ammoBoxes[cal]
+            
+            for (const box in thisCal){
+
+                if (cal == "GRENADES" || cal == "UGL" || cal == "FLARES"){
+                    lg.log("GRENADE_UGL_FLARE: " + thisCal[box], LogTextColor.CYAN)
+
+                    if (dbTables.templates.items[thisCal[box]]){
+                        console.log("is valid")
+                    } else {
+                        lg.log("NOT VALID", LogTextColor.RED)
+                    }
+                    continue
+                }
+
+                lg.log("Ammo Box: " + box, LogTextColor.CYAN)
+                if (dbTables.templates.items[box]){
+                    console.log("is valid")
+                } else {
+                    lg.log("NOT VALID", LogTextColor.RED)
+                }
+
+                lg.log("Ammo INSIDE " + box + ": " + thisCal[box].roundInBox_id, LogTextColor.GREEN)
+                if (dbTables.templates.items[thisCal[box].roundInBox_id]){
+                    console.log("is valid")
+                } else {
+                    lg.log("NOT VALID", LogTextColor.RED)
+                }
+            }
+        }
+    }
 
     logAmmoAndBoxes(lg: ILogger, dbItems: Record<string, ITemplateItem>, nameContains){
         lg.log("All rounds and ammo boxes for this caliber: " + nameContains, "magenta")
