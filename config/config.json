@@ -1,5 +1,5 @@
 {
-    "spt_realism_ammo_compat": false,
+    "spt_realism_ammo_compat": true,
 
     "spawnpoint_item_type_blacklist":[
         "5c164d2286f774194c5e69fa",
