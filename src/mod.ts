@@ -29,6 +29,10 @@ class Mod implements IPostDBLoadMod
         const dbTables = databaseServer.getTables();
         const dbLocations = dbTables.locations
 
+        if (config.debug_mode){
+            lg.log("[BOOBS_DEBUG]: Debug mode enabled", LogTextColor.WHITE)
+        }
+
         lg.log("[BOOBS]: Pushing ammo boxes to database...", LogTextColor.MAGENTA)
         this.pushAmmoBoxesToDB(dbTables, jsonUtil, lg)
         lg.log("[BOOBS]: Done!", LogTextColor.GREEN)
@@ -38,13 +42,19 @@ class Mod implements IPostDBLoadMod
             lg.log("[BOOBS]: Realism compatibility enabled, adjusting ammo tiers to SPT Realism's ammo stats", LogTextColor.GREEN)
         }
 
+        if (config.map_weights_enabled){
+            lg.log("[BOOBS]: Map weights enabled, adjusting ammo spawn chances by map", LogTextColor.GREEN)
+        }
+
         lg.log("[BOOBS]: Editing loose loot spawn points...", LogTextColor.MAGENTA)
         for (const mapKey in dbLocations){
 
             const thisMapLooseLoot =  dbTables.locations[mapKey]?.looseLoot?.spawnpoints
             if (thisMapLooseLoot === undefined) continue
 
-            const itemWeights = this.getItemWeights()
+            const itemWeights = this.getItemWeights(mapKey, config)
+
+            config.debug_mode ? lg.log("[BOOBS_DEBUG]: Added Item Weights: " + JSON.stringify(itemWeights), LogTextColor.WHITE) : null
 
             this.setMapAmmoSpawns(thisMapLooseLoot, itemWeights, dbTables, lg)
         }
@@ -119,7 +129,7 @@ class Mod implements IPostDBLoadMod
         return newBox
     }
 
-    getItemWeights(){
+    getItemWeights(mapKey, config){
 
         let ammoWeights:AmmoWeights = ammoWeightsJson.CATEGORIES
         if (config.spt_realism_ammo_compat){
@@ -137,7 +147,10 @@ class Mod implements IPostDBLoadMod
 
             const thisCaliberTiers = ammoTiers[caliber]
             const thisWeightType:string = thisCaliberTiers.type ?? "GENERAL"
-            const thisCategoryWeights:{string: number} = this.copyObject(ammoWeights[thisWeightType])
+            const thisCategoryWeights:{string: number} = Object.entries(ammoWeights[thisWeightType]).reduce((categoryWeights, [map, mapWeightValue]) => {
+                categoryWeights[map] = (config.map_weights_enabled ? mapWeightValue[mapKey] : mapWeightValue["GLOBAL"]) ?? mapWeightValue["GLOBAL"];
+                return categoryWeights;
+            }, {} as {string: number})
 
             //set weight to 0 if there are no ammos in a tier
             for (const tier in thisCategoryWeights){
@@ -152,7 +165,10 @@ class Mod implements IPostDBLoadMod
             const summedMultipliers = this.getSumOfWeights(thisCategoryWeights, 4)
 
             //all caliberss start with a weight of 1200 that gets multiplied by their respective cal multiplier
-            const totalAllottedPointsMultipliers = ammoWeights.CALIBERS
+            const totalAllottedPointsMultipliers = Object.entries(ammoWeights.CALIBERS).reduce((pointMultipliers, [ammoCaliber, mapCaliberMultiplierList]) => {
+                pointMultipliers[ammoCaliber] = (config.map_weights_enabled ? mapCaliberMultiplierList[mapKey] : mapCaliberMultiplierList["GLOBAL"]) ?? mapCaliberMultiplierList["GLOBAL"];
+                return pointMultipliers;
+            }, {} as {string: number})
             const totalAllottedWeight = 100000 * totalAllottedPointsMultipliers[caliber]
             
             /* formuala below (thanks chatGPT!)
