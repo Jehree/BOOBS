@@ -1,6 +1,10 @@
 {
     "spt_realism_ammo_compat": false,
 
+    "map_weights_enabled": true,
+
+    "debug_mode": false,
+
     "spawnpoint_item_type_blacklist":[
         "5c164d2286f774194c5e69fa",
         "5c99f98d86f7745c314214b3",
