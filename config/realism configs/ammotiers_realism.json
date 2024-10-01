@@ -223,6 +223,19 @@
             ]
         },
 
+        "6.8x51":{
+            "crap": [],
+            "flesh_medium": [],
+            "flesh_high": [],
+            "pen_medium": [],
+            "pen_high": [
+                "6.8x51_FMJ"
+            ],
+            "pen_veryhigh": [
+                "6.8x51_Hybrid"
+            ]
+        },
+
         ".300blk":{
             "crap": [
                 ".300blk_WHISPER"
