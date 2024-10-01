@@ -233,7 +233,6 @@
                 "5.56x45_M995", "5.56x45_SSAAP"
             ]
         },
-
         ".300blk":{
             "crap": [
                 ".300blk_VMAX"
@@ -251,6 +250,18 @@
             "pen_veryhigh": [
                 ".300blk_AP", ".300blk_CBJ"
             ]
+        },
+        "6.8x51":{
+            "crap": [],
+            "flesh_medium": [],
+            "flesh_high": [],
+            "pen_medium": [
+                "6.8x51_FMJ"
+            ],
+            "pen_high": [
+                "6.8x51_Hybrid"
+            ],
+            "pen_veryhigh": []
         },
 
         "7.62x39":{
