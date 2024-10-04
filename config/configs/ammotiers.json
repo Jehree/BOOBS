@@ -4,13 +4,13 @@
             "type": "GRENADES_UGL_FLARES",
 
             "low":[
-                "M18", "RDG-2B", "M7290", "ZARYA"
+                "66ffa441d21b5ae9530afccd", "66ffa445b589ee1190c42dbd", "66ffa4489bb4eb5a8650755c", "66ffa44a43c8ae1ed85b0ca3"
             ],
             "medium":[
-                "F1", "M67", "RGD-5"
+                "66ffa420e827dc9968054e5c", "66ffa4233f3c3363a34fdd6f", "66ffa430e2153a9be0885670"
             ],
             "high":[
-                "RGN", "RGO", "VOG17", "VOG25"
+                "66ffa43392bbb627fa42955f", "66ffa43644cedabc1a2e35b3", "66ffa439b8e0655b140fca3c", "66ffa43e65dc4a47c08ced45"
             ]
         },
 
@@ -18,13 +18,13 @@
             "type": "GRENADES_UGL_FLARES",
 
             "low":[
-                "40x46_M576-SHOT"
+                "66ffa465aa4bec4531850c44"
             ],
             "medium":[
-                "40x46_M386-HE", "40x46_M406-HE", "40x46_M433-HEDP"
+                "66ffa4545dd0f9fadf6b1d4a", "66ffa457491db135215a90c6", "66ffa45b2e7b1f32f964d220"
             ],
             "high": [
-                "40x46_M381-HE", "40x46_M441-HE", "40x53_VOG25"
+                "66ffa450edf212a68b47f525", "66ffa461c180f26730f2c515", "66ffa469f8e4899d97db78f2"
             ]
         },
 
@@ -32,123 +32,137 @@
             "type": "GRENADES_UGL_FLARES",
 
             "low":[
-                "26x75_POISONGREEN", "26x75_WHITE", "26x75_YELLOW", "RSP-30_YELLOW"
+                "66ffa46d38e47616dec74964", "66ffa55885bcb27f09f6a38b", "66ffa582571efa4abce59acd", "66ffa59f70cbaa3d83b5992f"
             ],
             "medium":[
-                "26x75_GREEN", "RSP-30_GREEN"
+                "66ffa4753c4759ad0a184917", "66ffa58da4ed8fe8b22ae67c"
             ],
             "high": [
-                "26x75_RED", "RSP-30_RED"
+                "66ffa54d0e5b3e9b653edb4c", "66ffa5966b13f3dd76f23a4d"
             ]
         },
 
         "7.62x25":{
             "crap": [
-                "7.62x25_AKBS", "7.62x25_FMJ43"
+                "66fbf69e963e1d4584ca3a03",
+                "66fbf613b76cec050633a125"
             ],
             "flesh_medium": [
-                "7.62x25_LRNPC", "7.62x25_LRN"
+                "66fbf6397fd6252ead34cdaf",
+                "66fbf62777ad86983a275252"
             ],
             "flesh_high": [],
             "pen_medium": [
-                "7.62x25_P", "7.62x25_PT"
+                "66fbf64e6c9b9556558c6a42",
+                "66fbf698c61b8f54053a2e00"
             ],
             "pen_high": [
-                "7.62x25_PST" 
+                "66fbf68cd23bd0aa22f17c5a" 
             ],
             "pen_veryhigh": []
         },
 
         "9x18":{
             "crap": [
-                "9x18_P", "9x18_PSO", "9x18_PSGSPPO", "9x18_PRSGS",
-                "9x18_PPE", "9x18_PPT", "9x18_PST"
+                "66fbf6ae29f1c29eca527820",
+                "66fbf704b0c7d81c42df9a9d",
+                "66fbf7179846ce3ec973be98",
+                "66fbf6ce945dc022df95073b",
+                "66fbf6e23839646cae20a59e",
+                "66fbf6ed0af5d24deb20f8fb",
+                "66fbf70aba9e67f0fd32c5d4"
             ],
             "flesh_medium": [
-                "9x18_PSV", "9x18_RG028"
+                "66fbf70fed4c72b9e474ceba",
+                "66fbf6c41ce75593b7c3682a"
             ],
             "flesh_high": [
-                "9x18_SP7", "9x18_SP8" 
+                "66fbf6c9b9605e7112ecf3fe",
+                "66fbf6d6a2b800584239d99b" 
             ],
             "pen_medium": [
-                "9x18_BZHT"
+                "66fbf6a78535d9820d29d084"
             ],
             "pen_high": [
-                "9x18_PBM", "9x18_PSTM"
+                "66fbf6dcec482f26bcc173af",
+                "66fbf6be3b751305d9cb1d96"
             ],
             "pen_veryhigh": []
         },
 
         "9x19":{
             "crap": [
-                "9x19_GT", "9x19_PSO", "9x19_M882"
+                "66fbf72f012157c7d0589f9d",
+                "66fbf75bd6af4df201844f9a",
+                "66fbf76536a1acc39ba98b3f"
             ],
             "flesh_medium": [
-                "9x19_CCI"
+                "66fbf7395be40bbdaccd81e3"
             ],
             "flesh_high": [
-                "9x19_RIP", "9x19_QUAKEMAKER"
+                "66fbf72680d89f1792b2d478",
+                "66fbf73e7fa4cc004264ae3d"
             ],
             "pen_medium": [
-                "9x19_PST"
+                "66fbf72046801f4c866f5739"
             ],
             "pen_high": [
-                "9x19_AP63" 
+                "66fbf7604f7a7689b4db956b"
             ],
             "pen_veryhigh": [
-                "9x19_PBP"
+                "66fbf7343a6d46bfe613a6d8"
             ]
         },
 
         "9x21":{
             "crap": [
-                "9x21_P"
+                "66fbf77f9ae9133facf80ef8"
             ],
             "flesh_medium": [
-                "9x21_PE"
+                "66fbf786262a1fe711c8ea62"
             ],
             "flesh_high": [],
             "pen_medium": [],
             "pen_high": [
-                "9x21_BT"
+                "66fbf78b94a5615defa42738"
             ],
             "pen_veryhigh": [
-                "9x21_PS"
+                "66fbf7ccc7d8772edbb4b698"
             ]
         },
 
         ".357":{
             "crap": [],
             "flesh_medium": [
-                ".357_HP"
+                "66fbf7d94a9e0f7af55709f7"
             ],
             "flesh_high": [
-                ".357_SP" 
+                "66fbf7ed432525417acb92ea"
             ],
             "pen_medium": [
-                ".357_JHP"
+                "66fbf7e72d40d07c3bebcdf9"
             ],
             "pen_high": [
-                ".357_FMJ"
+                "66fbf7d397c659ec477609ef"
             ],
             "pen_veryhigh": []
         },
 
         ".45":{
             "crap": [
-                ".45_LASERMATCHFMJ"
+                "66fbf8068c18e104cea0e2cb"
             ],
             "flesh_medium": [
-                ".45_HYDRASHOK"
+                "66fbf80073d55ac8a0283dbc"
             ],
             "flesh_high": [
-                ".45_RIP"
+                "66fbf80cb798f52ebe3b4c2d"
             ],
             "pen_medium": [
-                ".45_MATCHFMJ"
+                "66fbf7f30b5d8dcd8d63e06b"
             ],
             "pen_high": [
-                ".45_AP"
+                "66fbf7fa6887540d359da478"
             ],
             "pen_veryhigh": []
         },
@@ -156,99 +170,111 @@
         "4.6x30":{
             "crap": [],
             "flesh_medium": [
-                "4.6x30_ACTION"
+                "66fbf82a0c6cd13a63d70192"
             ],
             "flesh_high": [],
             "pen_medium": [
-                "4.6x30_SUBSONIC", "4.6x30_JSP"
+                "66fbf84af1afba505262f79c", "66fbf84d77bf563896b38e46"
             ],
             "pen_high": [
-                "4.6x30_FMJ"
+                "66fbf846e79f833b4f1373b5"
             ],
             "pen_veryhigh": [
-                "4.6x30_AP"
+                "66fbf8310320280d323609f0"
             ]
         },
 
         "5.7x28":{
             "crap": [
-                "5.7x28_SS198LF"
+                 "66fbf85e4dfd933012e93dde"
             ],
             "flesh_medium": [
-                "5.7x28_R37X"
+                 "66fbf855e63b84e8381b9c8c"
             ],
             "flesh_high": [
-                "5.7x28_R37F"
+                 "66fbf85216103878c623ae5b"
             ],
             "pen_medium": [
-                "5.7x28_SS197SR"
+                 "66fbf85ce511a846954bf627"
             ],
             "pen_high": [
-                "5.7x28_L191", "5.7x28_SB193"
+                "66fbf84f94bd959619c1c868", "66fbf857e5c952f12bc4af5d"
             ],
             "pen_veryhigh": [
-                "5.7x28_SS190"
+                 "66fbf859664a20c11b477302"
             ]
         },
 
         "5.45x39":{
             "crap": [
-                "5.45x39_PRS", "5.45x39_FMJ", "5.45x39_T"
+                 "66fbf869fad88741421b4738",
+                 "66fbf8664f8224873c2956e9",
+                 "66fbf86ee667a4cb79fd28ee"
             ],
             "flesh_medium": [
-                "5.45x39_SP", "5.45x39_US"
+                 "66fbf872bfd8e8c5e10d69a6",
+                 "66fbf871d51bde1d0d51659f"
             ],
             "flesh_high": [
-                "5.45x39_HP"
+                 "66fbf87635f556e73e1c41e5"
             ],
             "pen_medium": [
-                "5.45x39_BP", "5.45x39_PP", "5.45x39_PS"
+                 "66fbf86c8f0126ef44d8f4f8",
+                 "66fbf867c267649bc90ab9d2",
+                 "66fbf8614509064fd82d8d30"
             ],
             "pen_high": [
-                "5.45x39_7N40", "5.45x39_BT"
+                 "66fbf87bb07d5e8026897357",
+                 "66fbf874573b19f4418d0da2"
             ],
             "pen_veryhigh": [
-                "5.45x39_IGOLNIK", "5.45x39_BS"
+                 "66fbf8780cec2f76b2a68467",
+                 "66fbf863f637a295772c0104"
             ]
         },
 
         "5.56x45":{
             "crap": [
-                "5.56x45_FMJ", "5.56x45_M856", "5.56x45_M856",
-                "5.56x45_MK318MOD0", "5.56x45_MK255MOD0"
+                 "66fbf88693a4a90dc75d2667",
+                 "66fbf88c94f179c809b905f7",
+                 "66fbf8941a27153c206bc818",
+                 "66fbf892586a654e124e75f0"
             ],
             "flesh_medium": [
-                "5.56x45_HP"
+                 "66fbf887758225fb68ececac"
             ],
             "flesh_high": [
-                "5.56x45_WARMAGEDDON"
+                 "66fbf883873f54cf8812ddde"
             ],
             "pen_medium": [
-                "5.56x45_M855", "5.56x45_M856A1"  
+                 "66fbf87ecf670dadc4fa14ff",
+                 "66fbf88e787ed2b304747d89"  
             ],
             "pen_high": [
-                "5.56x45_M855A1" 
+                 "66fbf889f117de74ee74d0bb" 
             ],
             "pen_veryhigh": [
-                "5.56x45_M995", "5.56x45_SSAAP"
+                 "66fbf890bca5ec28865c5ea0",
+                 "66fbf8807c37d47fed637253"
             ]
         },
         ".300blk":{
             "crap": [
-                ".300blk_VMAX"
+                 "66fbf8a45be6cefbf68043ea"
             ],
             "flesh_medium": [],
             "flesh_high": [
-                ".300blk_WHISPER"
+                 "66fbf8a72872a43af526158a"
             ],
             "pen_medium": [
-                ".300blk_FMJ"
+                 "66fbf89e56c9744c97cd14b5"
             ],
             "pen_high": [
-                ".300blk_M62"
+                 "66fbf8a27a7e484218e52200"
             ],
             "pen_veryhigh": [
-                ".300blk_AP", ".300blk_CBJ"
+                 "66fbf89bda9a1af08b5827ea",
+                 "66fbf8aabe3bbbf1a4af50d2"
             ]
         },
         "6.8x51":{
@@ -256,30 +282,34 @@
             "flesh_medium": [],
             "flesh_high": [],
             "pen_medium": [
-                "6.8x51_FMJ"
+                 "66fbe393c626aa3df6def91d"
             ],
             "pen_high": [
-                "6.8x51_Hybrid"
+                 "66fbe3b683439ed257b855ea"
             ],
             "pen_veryhigh": []
         },
 
         "7.62x39":{
             "crap": [
-                "7.62x39_SP"
+                 "66fbf9f81f8ad560a49c64d1"
             ],
             "flesh_medium": [
-                "7.62x39_HP"
+                 "66fbf9fc6f9beabacb1c8b69"
             ],
             "flesh_high": [],
             "pen_medium": [
-                "7.62x39_T45M", "7.62x39_US", "7.62x39_FMJ"
+                 "66fbf8b3b0b08f2cb11bf8c7",
+                 "66fbf93814f41708cecb5f08",
+                 "66fbf93dda05b3f7fe55cb93"
             ],
             "pen_high": [
-                "7.62x39_PS"
+                 "66fbf8ad5b7c2eaa8338d4ab"
             ],
             "pen_veryhigh": [
-                "7.62x39_MAIAP", "7.62x39_BP", "7.62x39_PP"
+                 "66fbf8b1fb0d06db85d99af3",
+                 "66fbf93af25872062dc611a2",
+                 "66fbf9fa754f72971253d065"
             ]
         },
 
@@ -287,31 +317,43 @@
             "crap": [],
             "flesh_medium": [],
             "flesh_high": [
-                "7.62x51_ULTRANOSLER"
+                 "66fbfa04fb9e8f91f14c4e48"
             ],
             "pen_medium": [
-                "7.62x51_BCPFMJ", "7.62x51_TCWSP"
+                 "66fbfab15f0288e1e88f3106",
+                 "66fbfaae9d9b3ad13da31c36"
             ],
             "pen_high": [
-                "7.62x51_M80", "7.62x51_M62"
+                 "66fbfa024b6ce29bc1520eba",
+                 "66fbfaaff88bdc3d031aa671"
             ],
             "pen_veryhigh": [
-                "7.62x51_M993", "7.62x51_M61" 
+                 "66fbf9fe63a1da2ddff60a23",
+                 "66fbfa0047d671aa1874fef6" 
             ]
         },
 
         "7.62x54R":{
-            "crap": ["7.62x54R_FMJ"],
-            "flesh_medium": ["7.62x54R_SPBT"],
-            "flesh_high": ["7.62x54R_HPBT"],
+            "crap": [
+                 "66fbfad0da96bfcd7bef43ac"
+            ],
+            "flesh_medium": [
+                 "66fbfadd13c8396a920e1083"
+            ],
+            "flesh_high": [
+                 "66fbfadbe18db130b7d7becb"
+            ],
             "pen_medium": [
-                "7.62x54R_T46M", "7.62x54R_LPS"
+                 "66fbfabcbca8912d4ebfb650",
+                 "66fbfacc56bb76d18d2966fd"
             ],
             "pen_high": [
-                "7.62x54R_BT", "7.62x54R_PS"
+                 "66fbfab920487318d3492707",
+                 "66fbface4e41ec79e7f44604"
             ],
             "pen_veryhigh": [
-                "7.62x54R_BSGS", "7.62x54R_SNB"
+                 "66fbfab71c0ca2d6482aa3be",
+                 "66fbfab5e789cadc6e36def0"
             ]
         },
 
@@ -319,49 +361,50 @@
             "crap": [],
             "flesh_medium": [],
             "flesh_high": [
-                ".338lapua_TACX"
+                 "66fbfae5aef58badca0010f4"
             ],
             "pen_medium": [
-                ".338lapua_UCW"
+                 "66fbfae26de77d5a95dfbc9b"
             ],
             "pen_high": [
-                ".338lapua_FMJ"
+                 "66fbfae781e4e26edacf1b1f"
             ],
             "pen_veryhigh": [
-                ".338lapua_AP"
+                 "66fbfae0ba31cdf2b4dea574"
             ]
         },
 
         "9x39":{
             "crap": [
-                "9x39_SP5"
+                 "66fbfaee0fecbd3f7b70d5c3"
             ],
             "flesh_medium": [],
             "flesh_high": [],
             "pen_medium": [
-                "9x39_SPP", "9x39_SP6"
+                 "66fbfaeccfcba26322fb1e63",
+                 "66fbfaf25dd63d751b4cd6a0"
             ],
             "pen_high": [
-                "9x39_PAB9"
+                 "66fbfaf0f48f973bea8d938c"
             ],
             "pen_veryhigh": [
-                "9x39_BP"
+                 "66fbfaeac9f543ac31dc21af"
             ]
         },
 
         ".366tkm":{
             "crap": [
-                ".366tkm_FMJ"
+                 "66fbfaf826d68c2b508502e2"
             ],
             "flesh_medium": [],
             "flesh_high": [
-                ".366tkm_GEKSA"
+                 "66fbfafa1ed3eed4b5dd42c5"
             ],
             "pen_medium": [
-                ".366tkm_EKO"
+                 "66fbfaf536532b9d252e611e"
             ],
             "pen_high": [
-                ".366tkm_AP"
+                 "66fbfafc2bb9572f79f4aa26"
             ],
             "pen_veryhigh": []
         },
@@ -370,13 +413,13 @@
             "crap": [],
             "flesh_medium": [],
             "flesh_high": [
-                "12.7x55_PS12A"
+                 "66fbfb040690b3adfb5f9ce3"
             ],
             "pen_medium": [
-                "12.7x55_PS12"
+                 "66fbfb01e9cdf61d2ffa0a8b"
             ],
             "pen_high": [
-                "12.7x55_PS12B"
+                 "66fbfaffb436af408f0cf012"
             ],
             "pen_veryhigh": []
         },
@@ -385,20 +428,31 @@
             "type": "SHOTGUNS",
 
             "crap": [
-                "12x70_525BUCK", "12x70_7BUCK", "12x70_GRIZZLYSLUG", "12x70_COPPERSLUG",
-                "12x70_POLEVA3SLUG", "12x70_SUPERFORMANCESLUG", "12x70_SABOTSLUG", "12x70_LEADSLUG"
+                 "66fbfb0e29ff364498e582db",
+                 "66fbfb5b9a98dfe7b5fa0876",
+                 "66fbfb5d379bc6d8337a0acf",
+                 "66fbfb5fa5cf54c5842c8d57",
+                 "66fbfb639e99bdc124065439",
+                 "66fbfb153b221fd57d5efa80",
+                 "66fbfb53e29860848a4049eb"
             ],
             "flesh_medium": [
-                "12x70_65BUCK"
+                 "66fbfb0be56f777bf30f5c69",
+                 "66fbfb11817de004ba680303"
             ],
             "flesh_high": [
-                "12x70_MAGNUMBUCK", "12x70_RIPSLUG"
+                 "66fbfb13ffbc02dd6b317b93",
+                 "66fbfb06d43ced36201c21db"
             ],
             "pen_medium": [
-                "12x70_50BMGSLUG", "12x70_POLEVA6SLUG", "12x70_FTXSLUG"
+                 "66fbfb5669f2ea176646b0e3",
+                 "66fbfb6136dd8b5dca872d9d",
+                 "66fbfb58a4b331b211f77d75"
             ],
             "pen_high": [
-                "12x70_AP20SLUG", "12x70_FLECHETTE", "12x70_PIRANHA"
+                 "66fbfb093a1eb4db74078d0f",
+                 "66fbfb1789302e4730e70442",
+                 "66fbfb65dee2ccaf082b1279"
             ],
             "pen_veryhigh": []
         },
@@ -407,19 +461,23 @@
             "type": "SHOTGUNS",
 
             "crap": [
-                "20x70_75BUCK", "20x70_56BUCK", "20x70_62BUCK"
+                 "66fbfb68b38f4313725c505d",
+                 "66fbfb6a191c8d738385f7e2",
+                 "66fbfb6cf6ba0675564175be"
             ],
             "flesh_medium": [
-                "20x70_73BUCK", "20x70_POLEVA6SLUG", "20x70_POLEVA3SLUG"
+                 "66fbfb6e9f307ea166768065",
+                 "66fbfb732fe342dda3c5f1f4",
+                 "66fbfb7292e5ceaf5f82ed7d"
             ],
             "flesh_high": [
-                "20x70_DEVASTATORSLUG"
+                 "66fbfb6faa94cfbcfa9b688c"
             ],
             "pen_medium": [],
             "pen_high": [],
             "pen_veryhigh": [],
             "util": [
-                "20x70_STAR"
+                 "66fbfb76725b15489e9afaf6"
             ]
         },
 
@@ -428,16 +486,18 @@
 
             "crap": [],
             "flesh_medium": [
-                "23x75_SHRAP25"
+                 "66fbfb7f2f03f7251f61582c"
             ],
             "flesh_high": [
-                "23x75_SHRAP10"
+                 "66fbfb7d962e87b66d7caef0"
             ],
             "pen_medium": [],
-            "pen_high": ["23x75_BARRIKADASLUG"],
+            "pen_high": [
+                 "66fbfb7bb8336ab8352fb370"
+            ],
             "pen_veryhigh": [],
             "util": [
-                "23x75_FLASH"
+                 "66fbfb8134a4c2837d62b65d"
             ]
         }
     }
