@@ -1,41 +1,38 @@
 {
     "BOXES":{
         "GRENADES":{
-            "F1": "5710c24ad2720bc3458b45a3",
-            "M67": "58d3db5386f77426186285a0",
-            "RGD-5": "5448be9a4bdc2dfd2f8b456a",
-            "RGN": "617fd91e5539a84ec44ce155",
-            "RGO": "618a431df1eb8e24b8741deb",
-            "VOG17": "5e32f56fcb6d5863cc5e5ee4",
-            "VOG25": "5e340dcdcb6d5863cc5e5efb",
-
-            "M18": "617aa4dd8166f034d57de9c5",
-            "RDG-2B": "5a2a57cfc4a2826c6e06d44a",
-
-            "M7290": "619256e5f8af2c1a4e1f5d92",
-            "ZARYA": "5a0c27731526d80618476ac4"
+            "66ffa420e827dc9968054e5c": "5710c24ad2720bc3458b45a3",
+            "66ffa4233f3c3363a34fdd6f": "58d3db5386f77426186285a0",
+            "66ffa430e2153a9be0885670": "5448be9a4bdc2dfd2f8b456a",
+            "66ffa43392bbb627fa42955f": "617fd91e5539a84ec44ce155",
+            "66ffa43644cedabc1a2e35b3": "618a431df1eb8e24b8741deb",
+            "66ffa439b8e0655b140fca3c": "5e32f56fcb6d5863cc5e5ee4",
+            "66ffa43e65dc4a47c08ced45": "5e340dcdcb6d5863cc5e5efb",
+            "66ffa441d21b5ae9530afccd": "617aa4dd8166f034d57de9c5",
+            "66ffa445b589ee1190c42dbd": "5a2a57cfc4a2826c6e06d44a",
+            "66ffa4489bb4eb5a8650755c": "619256e5f8af2c1a4e1f5d92",
+            "66ffa44a43c8ae1ed85b0ca3": "5a0c27731526d80618476ac4"
         },
 
         "UGL":{
-            "40x46_M381-HE": "5ede474b0c226a66f5402622",
-            "40x46_M386-HE": "5ede475b549eed7c6d5c18fb",
-            "40x46_M406-HE": "5ede4739e0350d05467f73e8",
-            "40x46_M433-HEDP": "5f0c892565703e5c461894e9",
-            "40x46_M441-HE": "5ede47405b097655935d7d16",
-            "40x46_M576-SHOT": "5ede475339ee016e8c534742",
-            "40x53_VOG25": "5656eb674bdc2d35148b457c"
+            "66ffa450edf212a68b47f525": "5ede474b0c226a66f5402622",
+            "66ffa4545dd0f9fadf6b1d4a": "5ede475b549eed7c6d5c18fb",
+            "66ffa457491db135215a90c6": "5ede4739e0350d05467f73e8",
+            "66ffa45b2e7b1f32f964d220": "5f0c892565703e5c461894e9",
+            "66ffa461c180f26730f2c515": "5ede47405b097655935d7d16",
+            "66ffa465aa4bec4531850c44": "5ede475339ee016e8c534742",
+            "66ffa469f8e4899d97db78f2": "5656eb674bdc2d35148b457c"
         },
 
         "FLARES":{
-            "26x75_POISONGREEN": "635267f063651329f75a4ee8",
-            "26x75_GREEN": "62389aaba63f32501b1b444f",
-            "26x75_RED": "62389ba9a63f32501b1b4451",
-            "26x75_WHITE": "62389bc9423ed1685422dc57",
-            "26x75_YELLOW": "62389be94d5d474bf712e709",
-
-            "RSP-30_GREEN": "6217726288ed9f0845317459",
-            "RSP-30_RED": "62178c4d4ecf221597654e3d",
-            "RSP-30_YELLOW": "624c0b3340357b5f566e8766"
+            "66ffa46d38e47616dec74964": "635267f063651329f75a4ee8",
+            "66ffa4753c4759ad0a184917": "62389aaba63f32501b1b444f",
+            "66ffa54d0e5b3e9b653edb4c": "62389ba9a63f32501b1b4451",
+            "66ffa55885bcb27f09f6a38b": "62389bc9423ed1685422dc57",
+            "66ffa582571efa4abce59acd": "62389be94d5d474bf712e709",
+            "66ffa58da4ed8fe8b22ae67c": "6217726288ed9f0845317459",
+            "66ffa5966b13f3dd76f23a4d": "62178c4d4ecf221597654e3d",
+            "66ffa59f70cbaa3d83b5992f": "624c0b3340357b5f566e8766"
         },
 
         "7.62x25":{
