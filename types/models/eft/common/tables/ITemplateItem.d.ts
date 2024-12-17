@@ -1,12 +1,18 @@
+import { Ixyz } from "@spt/models/eft/common/Ixyz";
 export interface ITemplateItem {
     _id: string;
     _name: string;
     _parent: string;
-    _type: string;
-    _props: Props;
-    _proto: string;
+    _type: ItemType;
+    _props: IProps;
+    _proto?: string;
 }
-export interface Props {
+export interface IProps {
+    AllowSpawnOnLocations?: string[];
+    BeltMagazineRefreshCount?: number;
+    ChangePriceCoef?: number;
+    FixedPrice?: boolean;
+    SendToClient?: boolean;
     Name?: string;
     ShortName?: string;
     Description?: string;
@@ -19,8 +25,9 @@ export interface Props {
     SpawnChance?: number;
     CreditsPrice?: number;
     ItemSound?: string;
-    Prefab?: Prefab;
-    UsePrefab?: Prefab;
+    Prefab?: IPrefab;
+    UsePrefab?: IPrefab;
+    airDropTemplateId?: string;
     StackObjectsCount?: number;
     NotShownInSlot?: boolean;
     ExaminedByDefault?: boolean;
@@ -31,7 +38,9 @@ export interface Props {
     IsUngivable?: boolean;
     IsUnremovable?: boolean;
     IsLockedafterEquip?: boolean;
+    IsRagfairCurrency?: boolean;
     IsSpecialSlotOnly?: boolean;
+    IsStationaryWeapon?: boolean;
     QuestItem?: boolean;
     QuestStashMaxCount?: number;
     LootExperience?: number;
@@ -43,6 +52,7 @@ export interface Props {
     ExtraSizeLeft?: number;
     ExtraSizeRight?: number;
     ExtraSizeUp?: number;
+    FlareTypes?: string[];
     ExtraSizeDown?: number;
     ExtraSizeForceAdd?: boolean;
     MergesWithChildren?: boolean;
@@ -56,13 +66,14 @@ export interface Props {
     DiscardingBlock?: boolean;
     DropSoundType?: string;
     RagFairCommissionModifier?: number;
+    RarityPvE?: string;
     IsAlwaysAvailableForInsurance?: boolean;
     DiscardLimit?: number;
     MaxResource?: number;
     Resource?: number;
     DogTagQualities?: boolean;
-    Grids?: Grid[];
-    Slots?: Slot[];
+    Grids?: IGrid[];
+    Slots?: ISlot[];
     CanPutIntoDuringTheRaid?: boolean;
     CantRemoveFromSlotsDuringRaid?: string[];
     KeyIds?: string[];
@@ -75,20 +86,25 @@ export interface Props {
     EffectiveDistance?: number;
     Ergonomics?: number;
     Velocity?: number;
+    WithAnimatorAiming?: boolean;
     RaidModdable?: boolean;
     ToolModdable?: boolean;
+    UniqueAnimationModID?: number;
     BlocksFolding?: boolean;
     BlocksCollapsible?: boolean;
     IsAnimated?: boolean;
     HasShoulderContact?: boolean;
     SightingRange?: number;
+    ZoomSensitivity?: number;
     DoubleActionAccuracyPenaltyMult?: number;
-    ModesCount?: any;
+    ModesCount?: number | number[];
     DurabilityBurnModificator?: number;
     HeatFactor?: number;
     CoolFactor?: number;
     muzzleModType?: string;
     CustomAimPlane?: string;
+    IsAdjustableOptic?: boolean;
+    MinMaxFov?: Ixyz;
     sightModType?: string;
     aimingSensitivity?: number;
     SightModesCount?: number;
@@ -100,10 +116,12 @@ export interface Props {
     Intensity?: number;
     Mask?: string;
     MaskSize?: number;
+    IsMagazineForStationaryWeapon?: boolean;
     NoiseIntensity?: number;
     NoiseScale?: number;
-    Color?: Color;
+    Color?: IColor;
     DiffuseIntensity?: number;
+    MagazineWithBelt?: boolean;
     HasHinge?: boolean;
     RampPalette?: string;
     DepthFade?: number;
@@ -122,7 +140,7 @@ export interface Props {
     PixelationBlockCount?: number;
     ShiftsAimCamera?: number;
     magAnimationIndex?: number;
-    Cartridges?: Slot[];
+    Cartridges?: ISlot[];
     CanFast?: boolean;
     CanHit?: boolean;
     CanAdmin?: boolean;
@@ -145,6 +163,8 @@ export interface Props {
     BlocksArmorVest?: boolean;
     speedPenaltyPercent?: number;
     GridLayoutName?: string;
+    ContainerSpawnChanceModifier?: number;
+    SpawnExcludedFilter?: string[];
     SpawnFilter?: any[];
     containType?: any[];
     sizeWidth?: number;
@@ -155,11 +175,14 @@ export interface Props {
     spawnRarity?: string;
     minCountSpawn?: number;
     maxCountSpawn?: number;
-    openedByKeyID?: any[];
+    openedByKeyID?: string[];
     RigLayoutName?: string;
     MaxDurability?: number;
     armorZone?: string[];
     armorClass?: string | number;
+    armorColliders?: string[];
+    armorPlateColliders?: string[];
+    bluntDamageReduceFromSoftArmor?: boolean;
     mousePenalty?: number;
     weaponErgonomicPenalty?: number;
     BluntThroughput?: number;
@@ -169,14 +192,17 @@ export interface Props {
     weapUseType?: string;
     ammoCaliber?: string;
     OperatingResource?: number;
+    PostRecoilHorizontalRangeHandRotation?: Ixyz;
+    PostRecoilVerticalRangeHandRotation?: Ixyz;
+    ProgressRecoilAngleOnStable?: Ixyz;
     RepairComplexity?: number;
     durabSpawnMin?: number;
     durabSpawnMax?: number;
     isFastReload?: boolean;
     RecoilForceUp?: number;
     RecoilForceBack?: number;
-    Convergence?: number;
     RecoilAngle?: number;
+    RecoilCamera?: number;
     weapFireType?: string[];
     RecolDispersion?: number;
     SingleFireRate?: number;
@@ -184,6 +210,7 @@ export interface Props {
     bFirerate?: number;
     bEffDist?: number;
     bHearDist?: number;
+    blockLeftStance?: boolean;
     isChamberLoad?: boolean;
     chamberAmmoCount?: number;
     isBoltCatch?: boolean;
@@ -191,21 +218,26 @@ export interface Props {
     defAmmo?: string;
     AdjustCollimatorsToTrajectory?: boolean;
     shotgunDispersion?: number;
-    Chambers?: Slot[];
-    CameraRecoil?: number;
+    Chambers?: ISlot[];
     CameraSnap?: number;
+    CameraToWeaponAngleSpeedRange?: Ixyz;
+    CameraToWeaponAngleStep?: number;
     ReloadMode?: string;
     AimPlane?: number;
-    TacticalReloadStiffnes?: Xyz;
+    TacticalReloadStiffnes?: Ixyz;
     TacticalReloadFixation?: number;
-    RecoilCenter?: Xyz;
-    RotationCenter?: Xyz;
-    RotationCenterNoStock?: Xyz;
+    RecoilCenter?: Ixyz;
+    RotationCenter?: Ixyz;
+    RotationCenterNoStock?: Ixyz;
+    ShotsGroupSettings?: IShotsGroupSettings[];
     FoldedSlot?: string;
+    ForbidMissingVitalParts?: boolean;
+    ForbidNonEmptyContainers?: boolean;
     CompactHandling?: boolean;
     MinRepairDegradation?: number;
     MaxRepairDegradation?: number;
     IronSightRange?: number;
+    IsBeltMachineGun?: boolean;
     IsFlareGun?: boolean;
     IsGrenadeLauncher?: boolean;
     IsOneoff?: boolean;
@@ -231,8 +263,20 @@ export interface Props {
     AllowOverheat?: boolean;
     DoubleActionAccuracyPenalty?: number;
     RecoilPosZMult?: number;
+    RecoilReturnPathDampingHandRotation?: number;
+    RecoilReturnPathOffsetHandRotation?: number;
+    RecoilReturnSpeedHandRotation?: number;
+    RecoilStableAngleIncreaseStep?: number;
+    RecoilStableIndexShot?: number;
     MinRepairKitDegradation?: number;
     MaxRepairKitDegradation?: number;
+    MountCameraSnapMultiplier?: number;
+    MountHorizontalRecoilMultiplier?: number;
+    MountReturnSpeedHandMultiplier?: number;
+    MountVerticalRecoilMultiplier?: number;
+    MountingHorizontalOutOfBreathMultiplier?: number;
+    MountingPosition?: Ixyz;
+    MountingVerticalOutOfBreathMultiplier?: Ixyz;
     BlocksEarpiece?: boolean;
     BlocksEyewear?: boolean;
     BlocksHeadwear?: boolean;
@@ -242,7 +286,7 @@ export interface Props {
     FaceShieldComponent?: boolean;
     FaceShieldMask?: string;
     MaterialType?: string;
-    RicochetParams?: Xyz;
+    RicochetParams?: Ixyz;
     DeafStrength?: string;
     BlindnessProtection?: number;
     Distortion?: number;
@@ -252,14 +296,17 @@ export interface Props {
     CompressorGain?: number;
     CutoffFreq?: number;
     Resonance?: number;
+    RolloffMultiplier?: number;
+    ReverbVolume?: number;
     CompressorVolume?: number;
     AmbientVolume?: number;
     DryVolume?: number;
+    HighFrequenciesGain?: number;
     foodUseTime?: number;
     foodEffectType?: string;
     StimulatorBuffs?: string;
     effects_health?: IHealthEffect[] | Record<string, Record<string, number>>;
-    effects_damage?: any;
+    effects_damage?: Record<string, IEffectDamageProps>;
     MaximumNumberOfUsage?: number;
     knifeHitDelay?: number;
     knifeHitSlashRate?: number;
@@ -275,12 +322,12 @@ export interface Props {
     PrimaryConsumption?: number;
     SecondryConsumption?: number;
     DeflectionConsumption?: number;
-    AppliedTrunkRotation?: Xyz;
-    AppliedHeadRotation?: Xyz;
+    AppliedTrunkRotation?: Ixyz;
+    AppliedHeadRotation?: Ixyz;
     DisplayOnModel?: boolean;
     AdditionalAnimationLayer?: number;
     StaminaBurnRate?: number;
-    ColliderScaleMultiplier?: Xyz;
+    ColliderScaleMultiplier?: Ixyz;
     ConfigPathStr?: string;
     MaxMarkersCount?: number;
     scaleMin?: number;
@@ -321,7 +368,8 @@ export interface Props {
     casingMass?: number;
     casingSounds?: string;
     ProjectileCount?: number;
-    PenetrationChance?: number;
+    PenetrationChanceObstacle?: number;
+    PenetrationDamageMod?: number;
     RicochetChance?: number;
     FragmentationChance?: number;
     Deterioration?: number;
@@ -345,16 +393,17 @@ export interface Props {
     ShowHitEffectOnExplode?: boolean;
     ExplosionType?: string;
     AmmoLifeTimeSec?: number;
-    Contusion?: Xyz;
-    ArmorDistanceDistanceDamage?: Xyz;
-    Blindness?: Xyz;
+    AmmoTooltipClass?: string;
+    Contusion?: Ixyz;
+    ArmorDistanceDistanceDamage?: Ixyz;
+    Blindness?: Ixyz;
     IsLightAndSoundShot?: boolean;
     LightAndSoundShotAngle?: number;
     LightAndSoundShotSelfContusionTime?: number;
     LightAndSoundShotSelfContusionStrength?: number;
     MalfMisfireChance?: number;
     MalfFeedChance?: number;
-    StackSlots?: StackSlot[];
+    StackSlots?: IStackSlot[];
     type?: string;
     eqMin?: number;
     eqMax?: number;
@@ -367,28 +416,45 @@ export interface Props {
     explDelay?: number;
     EmitTime?: number;
     CanBeHiddenDuringThrow?: boolean;
+    CanPlantOnGround?: boolean;
     MinTimeToContactExplode?: number;
     ExplosionEffectType?: string;
     LinkedWeapon?: string;
     UseAmmoWithoutShell?: boolean;
+    RandomLootSettings?: IRandomLootSettings;
+    RecoilCategoryMultiplierHandRotation?: number;
+    RecoilDampingHandRotation?: number;
+    LeanWeaponAgainstBody?: boolean;
+    RemoveShellAfterFire?: boolean;
+    RepairStrategyTypes?: string[];
+    IsEncoded?: boolean;
+    LayoutName?: string;
+    Lower75Prefab?: IPrefab;
+    MaxUsages?: number;
+    ScavKillExpPenalty?: number;
+    ScavKillExpPenaltyPVE?: number;
+    ScavKillStandingPenalty?: number;
+    ScavKillStandingPenaltyPVE?: number;
+    TradersDiscount?: number;
+    TradersDiscountPVE?: number;
 }
 export interface IHealthEffect {
     type: string;
     value: number;
 }
-export interface Prefab {
+export interface IPrefab {
     path: string;
     rcid: string;
 }
-export interface Grid {
+export interface IGrid {
     _name: string;
     _id: string;
     _parent: string;
-    _props: GridProps;
+    _props: IGridProps;
     _proto: string;
 }
-export interface GridProps {
-    filters: GridFilter[];
+export interface IGridProps {
+    filters: IGridFilter[];
     cellsH: number;
     cellsV: number;
     minCount: number;
@@ -396,62 +462,78 @@ export interface GridProps {
     maxWeight: number;
     isSortingTable: boolean;
 }
-export interface GridFilter {
+export interface IGridFilter {
     Filter: string[];
     ExcludedFilter: string[];
+    locked?: boolean;
 }
-export interface Slot {
+export interface ISlot {
     _name: string;
     _id: string;
     _parent: string;
-    _props: SlotProps;
+    _props: ISlotProps;
     _max_count?: number;
-    _required: boolean;
-    _mergeSlotWithChildren: boolean;
+    _required?: boolean;
+    _mergeSlotWithChildren?: boolean;
     _proto: string;
 }
-export interface SlotProps {
-    filters: SlotFilter[];
+export interface ISlotProps {
+    filters: ISlotFilter[];
+    MaxStackCount?: number;
 }
-export interface SlotFilter {
+export interface ISlotFilter {
     Shift?: number;
+    locked?: boolean;
+    Plate?: string;
+    armorColliders?: string[];
+    armorPlateColliders?: string[];
     Filter: string[];
     AnimationIndex?: number;
 }
-export interface Xyz {
-    x: number;
-    y: number;
-    z: number;
-}
-export interface StackSlot {
+export interface IStackSlot {
     _name?: string;
     _id: string;
     _parent: string;
     _max_count: number;
-    _props: StackSlotProps;
+    _props: IStackSlotProps;
     _proto: string;
-    upd: any;
+    upd?: any;
 }
-export interface StackSlotProps {
-    filters: SlotFilter[];
+export interface IStackSlotProps {
+    filters: ISlotFilter[];
 }
-export interface EffectsHealth {
-    Energy: EffectsHealthProps;
-    Hydration: EffectsHealthProps;
+export interface IRandomLootSettings {
+    allowToSpawnIdenticalItems: boolean;
+    allowToSpawnQuestItems: boolean;
+    countByRarity: any[];
+    excluded: IRandomLootExcluded;
+    filters: any[];
+    findInRaid: boolean;
+    maxCount: number;
+    minCount: number;
 }
-export interface EffectsHealthProps {
+export interface IRandomLootExcluded {
+    categoryTemplates: any[];
+    rarity: string[];
+    templates: any[];
+}
+export interface IEffectsHealth {
+    Energy: IEffectsHealthProps;
+    Hydration: IEffectsHealthProps;
+}
+export interface IEffectsHealthProps {
     value: number;
 }
-export interface EffectsDamage {
-    Pain: EffectDamageProps;
-    LightBleeding: EffectDamageProps;
-    HeavyBleeding: EffectDamageProps;
-    Contusion: EffectDamageProps;
-    RadExposure: EffectDamageProps;
-    Fracture: EffectDamageProps;
-    DestroyedPart: EffectDamageProps;
+export interface IEffectsDamage {
+    Pain: IEffectDamageProps;
+    LightBleeding: IEffectDamageProps;
+    HeavyBleeding: IEffectDamageProps;
+    Contusion: IEffectDamageProps;
+    RadExposure: IEffectDamageProps;
+    Fracture: IEffectDamageProps;
+    DestroyedPart: IEffectDamageProps;
 }
-export interface EffectDamageProps {
+export interface IEffectDamageProps {
     delay: number;
     duration: number;
     fadeOut: number;
@@ -459,9 +541,20 @@ export interface EffectDamageProps {
     healthPenaltyMin?: number;
     healthPenaltyMax?: number;
 }
-export interface Color {
+export interface IColor {
     r: number;
     g: number;
     b: number;
     a: number;
+}
+export interface IShotsGroupSettings {
+    EndShotIndex: number;
+    ShotRecoilPositionStrength: Ixyz;
+    ShotRecoilRadianRange: Ixyz;
+    ShotRecoilRotationStrength: Ixyz;
+    StartShotIndex: number;
+}
+export declare enum ItemType {
+    NODE = "Node",
+    ITEM = "Item"
 }

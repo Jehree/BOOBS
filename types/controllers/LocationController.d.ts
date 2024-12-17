@@ -1,54 +1,27 @@
-import { LocationGenerator } from "../generators/LocationGenerator";
-import { LootGenerator } from "../generators/LootGenerator";
-import { WeightedRandomHelper } from "../helpers/WeightedRandomHelper";
-import { ILocationBase } from "../models/eft/common/ILocationBase";
-import { ILocationsGenerateAllResponse } from "../models/eft/common/ILocationsSourceDestinationBase";
-import { AirdropTypeEnum } from "../models/enums/AirdropType";
-import { IAirdropConfig } from "../models/spt/config/IAirdropConfig";
-import { LootItem } from "../models/spt/services/LootItem";
-import { LootRequest } from "../models/spt/services/LootRequest";
-import { ILogger } from "../models/spt/utils/ILogger";
-import { ConfigServer } from "../servers/ConfigServer";
-import { DatabaseServer } from "../servers/DatabaseServer";
-import { LocalisationService } from "../services/LocalisationService";
-import { HashUtil } from "../utils/HashUtil";
-import { JsonUtil } from "../utils/JsonUtil";
-import { TimeUtil } from "../utils/TimeUtil";
+import { ILocationsGenerateAllResponse } from "@spt/models/eft/common/ILocationsSourceDestinationBase";
+import { IGetAirdropLootRequest } from "@spt/models/eft/location/IGetAirdropLootRequest";
+import { IGetAirdropLootResponse } from "@spt/models/eft/location/IGetAirdropLootResponse";
+import { ILocationConfig } from "@spt/models/spt/config/ILocationConfig";
+import { ILogger } from "@spt/models/spt/utils/ILogger";
+import { ConfigServer } from "@spt/servers/ConfigServer";
+import { AirdropService } from "@spt/services/AirdropService";
+import { DatabaseService } from "@spt/services/DatabaseService";
+import { ICloner } from "@spt/utils/cloners/ICloner";
 export declare class LocationController {
-    protected jsonUtil: JsonUtil;
-    protected hashUtil: HashUtil;
-    protected weightedRandomHelper: WeightedRandomHelper;
     protected logger: ILogger;
-    protected locationGenerator: LocationGenerator;
-    protected localisationService: LocalisationService;
-    protected lootGenerator: LootGenerator;
-    protected databaseServer: DatabaseServer;
-    protected timeUtil: TimeUtil;
+    protected databaseService: DatabaseService;
+    protected airdropService: AirdropService;
     protected configServer: ConfigServer;
-    protected airdropConfig: IAirdropConfig;
-    constructor(jsonUtil: JsonUtil, hashUtil: HashUtil, weightedRandomHelper: WeightedRandomHelper, logger: ILogger, locationGenerator: LocationGenerator, localisationService: LocalisationService, lootGenerator: LootGenerator, databaseServer: DatabaseServer, timeUtil: TimeUtil, configServer: ConfigServer);
-    get(location: string): ILocationBase;
-    generate(name: string): ILocationBase;
+    protected cloner: ICloner;
+    protected locationConfig: ILocationConfig;
+    constructor(logger: ILogger, databaseService: DatabaseService, airdropService: AirdropService, configServer: ConfigServer, cloner: ICloner);
     /**
+     * Handle client/locations
      * Get all maps base location properties without loot data
+     * @param sessionId Players Id
      * @returns ILocationsGenerateAllResponse
      */
-    generateAll(): ILocationsGenerateAllResponse;
-    /**
-     * Get loot for an airdop container
-     * Generates it randomly based on config/airdrop.json values
-     * @returns Array of LootItem objects
-     */
-    getAirdropLoot(): LootItem[];
-    /**
-     * Randomly pick a type of airdrop loot using weighted values from config
-     * @returns airdrop type value
-     */
-    protected chooseAirdropType(): AirdropTypeEnum;
-    /**
-     * Get the configuration for a specific type of airdrop
-     * @param airdropType Type of airdrop to get settings for
-     * @returns LootRequest
-     */
-    protected getAirdropLootConfigByType(airdropType: AirdropTypeEnum): LootRequest;
+    generateAll(sessionId: string): ILocationsGenerateAllResponse;
+    /** Handle client/airdrop/loot */
+    getAirdropLoot(request: IGetAirdropLootRequest): IGetAirdropLootResponse;
 }

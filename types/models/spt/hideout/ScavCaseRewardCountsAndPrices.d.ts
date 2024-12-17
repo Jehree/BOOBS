@@ -1,9 +1,9 @@
-export interface ScavCaseRewardCountsAndPrices {
-    common: RewardCountAndPriceDetails;
-    rare: RewardCountAndPriceDetails;
-    superrare: RewardCountAndPriceDetails;
+export interface IScavCaseRewardCountsAndPrices {
+    Common: IRewardCountAndPriceDetails;
+    Rare: IRewardCountAndPriceDetails;
+    Superrare: IRewardCountAndPriceDetails;
 }
-export interface RewardCountAndPriceDetails {
+export interface IRewardCountAndPriceDetails {
     minCount: number;
     maxCount: number;
     minPriceRub: number;

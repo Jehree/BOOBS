@@ -1,44 +1,52 @@
-import { DialogueHelper } from "../helpers/DialogueHelper";
-import { ItemHelper } from "../helpers/ItemHelper";
-import { ProfileHelper } from "../helpers/ProfileHelper";
-import { QuestConditionHelper } from "../helpers/QuestConditionHelper";
-import { QuestHelper } from "../helpers/QuestHelper";
-import { IPmcData } from "../models/eft/common/IPmcData";
-import { Item } from "../models/eft/common/tables/IItem";
-import { AvailableForConditions, IQuest, Reward } from "../models/eft/common/tables/IQuest";
-import { IRepeatableQuest } from "../models/eft/common/tables/IRepeatableQuests";
-import { IItemEventRouterResponse } from "../models/eft/itemEvent/IItemEventRouterResponse";
-import { IAcceptQuestRequestData } from "../models/eft/quests/IAcceptQuestRequestData";
-import { ICompleteQuestRequestData } from "../models/eft/quests/ICompleteQuestRequestData";
-import { IHandoverQuestRequestData } from "../models/eft/quests/IHandoverQuestRequestData";
-import { IQuestConfig } from "../models/spt/config/IQuestConfig";
-import { ILogger } from "../models/spt/utils/ILogger";
-import { EventOutputHolder } from "../routers/EventOutputHolder";
-import { ConfigServer } from "../servers/ConfigServer";
-import { DatabaseServer } from "../servers/DatabaseServer";
-import { LocaleService } from "../services/LocaleService";
-import { LocalisationService } from "../services/LocalisationService";
-import { PlayerService } from "../services/PlayerService";
-import { HttpResponseUtil } from "../utils/HttpResponseUtil";
-import { TimeUtil } from "../utils/TimeUtil";
+import { DialogueHelper } from "@spt/helpers/DialogueHelper";
+import { ItemHelper } from "@spt/helpers/ItemHelper";
+import { ProfileHelper } from "@spt/helpers/ProfileHelper";
+import { QuestConditionHelper } from "@spt/helpers/QuestConditionHelper";
+import { QuestHelper } from "@spt/helpers/QuestHelper";
+import { TraderHelper } from "@spt/helpers/TraderHelper";
+import { IPmcData } from "@spt/models/eft/common/IPmcData";
+import { IItem } from "@spt/models/eft/common/tables/IItem";
+import { IQuest, IQuestCondition } from "@spt/models/eft/common/tables/IQuest";
+import { IRepeatableQuest } from "@spt/models/eft/common/tables/IRepeatableQuests";
+import { IItemEventRouterResponse } from "@spt/models/eft/itemEvent/IItemEventRouterResponse";
+import { IAcceptQuestRequestData } from "@spt/models/eft/quests/IAcceptQuestRequestData";
+import { ICompleteQuestRequestData } from "@spt/models/eft/quests/ICompleteQuestRequestData";
+import { IFailQuestRequestData } from "@spt/models/eft/quests/IFailQuestRequestData";
+import { IHandoverQuestRequestData } from "@spt/models/eft/quests/IHandoverQuestRequestData";
+import { IQuestConfig } from "@spt/models/spt/config/IQuestConfig";
+import { ILogger } from "@spt/models/spt/utils/ILogger";
+import { EventOutputHolder } from "@spt/routers/EventOutputHolder";
+import { ConfigServer } from "@spt/servers/ConfigServer";
+import { DatabaseService } from "@spt/services/DatabaseService";
+import { LocaleService } from "@spt/services/LocaleService";
+import { LocalisationService } from "@spt/services/LocalisationService";
+import { MailSendService } from "@spt/services/MailSendService";
+import { PlayerService } from "@spt/services/PlayerService";
+import { HttpResponseUtil } from "@spt/utils/HttpResponseUtil";
+import { TimeUtil } from "@spt/utils/TimeUtil";
+import { ICloner } from "@spt/utils/cloners/ICloner";
 export declare class QuestController {
     protected logger: ILogger;
     protected timeUtil: TimeUtil;
     protected httpResponseUtil: HttpResponseUtil;
     protected eventOutputHolder: EventOutputHolder;
-    protected databaseServer: DatabaseServer;
+    protected databaseService: DatabaseService;
     protected itemHelper: ItemHelper;
     protected dialogueHelper: DialogueHelper;
+    protected mailSendService: MailSendService;
     protected profileHelper: ProfileHelper;
+    protected traderHelper: TraderHelper;
     protected questHelper: QuestHelper;
     protected questConditionHelper: QuestConditionHelper;
     protected playerService: PlayerService;
     protected localeService: LocaleService;
     protected localisationService: LocalisationService;
     protected configServer: ConfigServer;
+    protected cloner: ICloner;
     protected questConfig: IQuestConfig;
-    constructor(logger: ILogger, timeUtil: TimeUtil, httpResponseUtil: HttpResponseUtil, eventOutputHolder: EventOutputHolder, databaseServer: DatabaseServer, itemHelper: ItemHelper, dialogueHelper: DialogueHelper, profileHelper: ProfileHelper, questHelper: QuestHelper, questConditionHelper: QuestConditionHelper, playerService: PlayerService, localeService: LocaleService, localisationService: LocalisationService, configServer: ConfigServer);
+    constructor(logger: ILogger, timeUtil: TimeUtil, httpResponseUtil: HttpResponseUtil, eventOutputHolder: EventOutputHolder, databaseService: DatabaseService, itemHelper: ItemHelper, dialogueHelper: DialogueHelper, mailSendService: MailSendService, profileHelper: ProfileHelper, traderHelper: TraderHelper, questHelper: QuestHelper, questConditionHelper: QuestConditionHelper, playerService: PlayerService, localeService: LocaleService, localisationService: LocalisationService, configServer: ConfigServer, cloner: ICloner);
     /**
+     * Handle client/quest/list
      * Get all quests visible to player
      * Exclude quests with incomplete preconditions (level/loyalty)
      * @param sessionID session id
@@ -46,22 +54,25 @@ export declare class QuestController {
      */
     getClientQuests(sessionID: string): IQuest[];
     /**
-     * Is the quest for the opposite side the player is on
-     * @param playerSide Player side (usec/bear)
-     * @param questId QuestId to check
-     */
-    protected questIsForOtherSide(playerSide: string, questId: string): boolean;
-    /**
+     * Handle QuestAccept event
      * Handle the client accepting a quest and starting it
      * Send starting rewards if any to player and
      * Send start notification if any to player
      * @param pmcData Profile to update
      * @param acceptedQuest Quest accepted
      * @param sessionID Session id
-     * @returns client response
+     * @returns Client response
      */
     acceptQuest(pmcData: IPmcData, acceptedQuest: IAcceptQuestRequestData, sessionID: string): IItemEventRouterResponse;
     /**
+     *
+     * @param questConditions Conditions to iterate over and possibly add to profile
+     * @param pmcData Profile to add to
+     * @param questId Quest conditions came from
+     */
+    protected addTaskConditionCountersToProfile(questConditions: IQuestCondition[], pmcData: IPmcData, questId: string): void;
+    /**
+     * TODO - Move this code into RepeatableQuestController
      * Handle the client accepting a repeatable quest and starting it
      * Send starting rewards if any to player and
      * Send start notification if any to player
@@ -79,9 +90,10 @@ export declare class QuestController {
      */
     protected getRepeatableQuestFromProfile(pmcData: IPmcData, acceptedQuest: IAcceptQuestRequestData): IRepeatableQuest;
     /**
+     * Handle QuestComplete event
      * Update completed quest in profile
      * Add newly unlocked quests to profile
-     * Also recalculate thier level due to exp rewards
+     * Also recalculate their level due to exp rewards
      * @param pmcData Player profile
      * @param body Completed quest request
      * @param sessionID Session id
@@ -89,36 +101,7 @@ export declare class QuestController {
      */
     completeQuest(pmcData: IPmcData, body: ICompleteQuestRequestData, sessionID: string): IItemEventRouterResponse;
     /**
-     * Send a popup to player on successful completion of a quest
-     * @param sessionID session id
-     * @param pmcData Player profile
-     * @param completedQuestId Completed quest id
-     * @param questRewards Rewards given to player
-     */
-    protected sendSuccessDialogMessageOnQuestComplete(sessionID: string, pmcData: IPmcData, completedQuestId: string, questRewards: Reward[]): void;
-    /**
-     * Look for newly available quests after completing a quest with a requirement to wait x minutes (time-locked) before being available and add data to profile
-     * @param pmcData Player profile to update
-     * @param quests Quests to look for wait conditions in
-     * @param completedQuestId Quest just completed
-     */
-    protected addTimeLockedQuestsToProfile(pmcData: IPmcData, quests: IQuest[], completedQuestId: string): void;
-    /**
-     * Returns a list of quests that should be failed when a quest is completed
-     * @param completedQuestId quest completed id
-     * @returns array of quests
-     */
-    protected getQuestsFailedByCompletingQuest(completedQuestId: string): IQuest[];
-    /**
-     * Fail the quests provided
-     * Update quest in profile, otherwise add fresh quest object with failed status
-     * @param sessionID session id
-     * @param pmcData player profile
-     * @param questsToFail quests to fail
-     */
-    protected failQuests(sessionID: string, pmcData: IPmcData, questsToFail: IQuest[]): void;
-    /**
-     *
+     * Handle QuestHandover event
      * @param pmcData Player profile
      * @param handoverQuestRequest handover item request
      * @param sessionID Session id
@@ -140,7 +123,7 @@ export declare class QuestController {
      * @param output Response to send to user
      * @returns IItemEventRouterResponse
      */
-    protected showQuestItemHandoverMatchError(handoverQuestRequest: IHandoverQuestRequestData, itemHandedOver: Item, handoverRequirements: AvailableForConditions, output: IItemEventRouterResponse): IItemEventRouterResponse;
+    protected showQuestItemHandoverMatchError(handoverQuestRequest: IHandoverQuestRequestData, itemHandedOver: IItem, handoverRequirements: IQuestCondition, output: IItemEventRouterResponse): IItemEventRouterResponse;
     /**
      * Increment a backend counter stored value by an amount,
      * Create counter if it does not exist
@@ -149,5 +132,13 @@ export declare class QuestController {
      * @param questId quest id counter is associated with
      * @param counterValue value to increment the backend counter with
      */
-    protected updateProfileBackendCounterValue(pmcData: IPmcData, conditionId: string, questId: string, counterValue: number): void;
+    protected updateProfileTaskConditionCounterValue(pmcData: IPmcData, conditionId: string, questId: string, counterValue: number): void;
+    /**
+     * Handle /client/game/profile/items/moving - QuestFail
+     * @param pmcData Pmc profile
+     * @param request Fail qeust request
+     * @param sessionID Session id
+     * @returns IItemEventRouterResponse
+     */
+    failQuest(pmcData: IPmcData, request: IFailQuestRequestData, sessionID: string, output: IItemEventRouterResponse): IItemEventRouterResponse;
 }

@@ -1,7 +1,11 @@
-import { Container, IInventoryBaseActionRequestData } from "./IInventoryBaseActionRequestData";
+import { IContainer, IInventoryBaseActionRequestData } from "@spt/models/eft/inventory/IInventoryBaseActionRequestData";
 export interface IInventorySplitRequestData extends IInventoryBaseActionRequestData {
     Action: "Split";
-    item: string;
-    container: Container;
+    /** Id of item to split */
+    splitItem: string;
+    /** Id of new item stack */
+    newItem: string;
+    /** Destination new item will be placed in */
+    container: IContainer;
     count: number;
 }

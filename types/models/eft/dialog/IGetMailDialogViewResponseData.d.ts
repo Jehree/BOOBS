@@ -1,6 +1,6 @@
-import { Message } from "../profile/IAkiProfile";
+import { IMessage, IUserDialogInfo } from "@spt/models/eft/profile/ISptProfile";
 export interface IGetMailDialogViewResponseData {
-    messages: Message[];
-    profiles: any[];
+    messages: IMessage[];
+    profiles: IUserDialogInfo[];
     hasMessagesWithRewards: boolean;
 }
